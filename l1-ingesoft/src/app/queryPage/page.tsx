@@ -9,7 +9,7 @@ import ViviendaTab from "@/components/ViviendaTab"
 const queryPage = () => {
     return (
         <div className="w-full h-full p-16">
-            <h1 className="text-2xl font-bold mb-4">Realice las consultas y observe su resultado</h1>
+            <h1 className="text-3xl font-bold mb-4">Realice las consultas y observe su resultado</h1>
             <Tabs defaultValue="Personas" className="w-full">
                 <TabsList className="w-full flex">
                     <TabsTrigger className="flex-1" value="Personas">Personas</TabsTrigger>
