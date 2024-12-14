@@ -16,4 +16,28 @@ export const fetchPersonas = async () => {
       return { data: null, error: "No se pudo cargar la información de las personas." }; // Retorna null para los datos y el error
     }
   };
+
+  
+
+  interface UpdatePersonaData {
+    nombre: string;
+    vivo: boolean;
+  }
+  
+  export const updatePersona = async (id: number, data: UpdatePersonaData) => {
+    const response = await fetch(`/api/personas/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+  
+    if (!response.ok) {
+      throw new Error('Failed to update persona');
+    }
+  
+    return response.json();
+  };
+  
   

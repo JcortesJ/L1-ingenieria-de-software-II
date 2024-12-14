@@ -3,6 +3,7 @@ import DepartamentoTab from "@/components/DepartamentoTab"
 import MunicipioTab from "@/components/MunicipioTab"
 import PersonaTab from "@/components/PersonaTab"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Toaster } from "@/components/ui/toaster"
 import ViviendaTab from "@/components/ViviendaTab"
 
 
@@ -23,6 +24,7 @@ const queryPage = () => {
                 <TabsContent value="Departamentos"><DepartamentoTab/></TabsContent>
 
             </Tabs>
+            <Toaster />
         </div>
 
     )
