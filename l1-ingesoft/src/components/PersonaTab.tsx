@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, use } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { set, useForm } from "react-hook-form"
 import * as z from "zod"
@@ -25,6 +25,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from 'lucide-react'
 import { Switch } from "@/components/ui/switch"
 import dataPersonas from "@/testdata/dataPersona"
+import { fetchPersonas } from "@/actions/personas"
 
 const formSchema = z.object({
     livingStatus: z.enum(["all", "alive", "deceased"]),
@@ -38,22 +39,22 @@ const aplicarFiltros = (personas: any, values: any) => {
     const filteredPersonas = personas.filter((persona: any) => {
         // Filtrar por estado de vida
         if (values.livingStatus !== "all" && persona.vivo !== (values.livingStatus === "alive")) return false
-        
+
         // Filtrar por número de casas
         if (values.houses !== "all") {
             if (values.houses === "3+" && persona.numCasas < 3) return false
             if (values.houses !== "3+" && persona.numCasas !== parseInt(values.houses)) return false
         }
-        
+
         // Filtrar por nombre
         if (values.searchName && !persona.nombre.toLowerCase().startsWith(values.searchName.toLowerCase())) return false
-        
+
         // Filtrar por departamento
         if (values.department && persona.departamento && !persona.departamento.toLowerCase().startsWith(values.department.toLowerCase())) return false
-        
+
         // Filtrar solo cabezas de familia
         if (values.isHeadOfFamily && persona.id !== persona.id_cabeza_familia) return false
-        
+
         return true
     })
 
@@ -61,9 +62,10 @@ const aplicarFiltros = (personas: any, values: any) => {
 }
 
 const PersonaTab = () => {
-    const [personas, setPersonas] = useState(dataPersonas)
+
+
     const [filteredPersonas, setFilteredPersonas] = useState(dataPersonas)
-    const [isLoading, setIsLoading] = useState(false)
+
     const [error, setError] = useState<string | null>(null)
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -88,6 +90,23 @@ const PersonaTab = () => {
         }
     }
 
+    useEffect(() => {
+        //simulacion primea consulta a la APi
+        // const loadData = async () => {
+        //     const { data, error } = await fetchPersonas(); // Llama a la función fetch
+      
+        //     if (error) {
+        //       setError(error); // Si hay un error, actualiza el estado de error
+        //     } else {
+        //       setError(null) // Restablecer el error si no hay error
+        //       setFilteredPersonas(data); // Si no hay error, actualiza el estado con los datos
+        //     }
+        //   };
+      
+        // loadData();
+        setFilteredPersonas(dataPersonas)
+
+    }, [])
     // Se aplica el filtro cada vez que un valor en el formulario cambia
     useEffect(() => {
         const values = form.getValues()
@@ -178,7 +197,7 @@ const PersonaTab = () => {
                             name="isHeadOfFamily"
                             render={({ field }) => (
                                 <FormItem className="flex flex-row items-center gap-2">
-                                    
+
                                     <FormControl>
                                         <Switch checked={field.value} onCheckedChange={field.onChange} />
                                     </FormControl>
