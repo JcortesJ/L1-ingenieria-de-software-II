@@ -19,7 +19,7 @@ const MunicipioTab = () => {
 
   useEffect(() => {
     const filtered = municipios.filter((municipio) =>
-      municipio.departamento.toLowerCase().includes(departamentoFilter.toLowerCase())
+      municipio.departamento.toLowerCase().startsWith(departamentoFilter.toLowerCase())
     )
     setFilteredMunicipios(filtered)
   }, [departamentoFilter, municipios])
