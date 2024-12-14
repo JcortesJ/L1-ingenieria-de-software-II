@@ -1,29 +1,38 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import viviendasData, { ViviendaType } from '@/testdata/dataViviendas'
-import ViviendaCard from './ViviendaCard'
-import { fetchViviendas } from '@/actions/vivienda'
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert' // Importa el componente de alerta
+import { useState, useEffect } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import viviendasData, { ViviendaType } from "@/testdata/dataViviendas";
+import ViviendaCard from "./ViviendaCard";
+//import { fetchViviendas } from '@/actions/vivienda'
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"; // Importa el componente de alerta
 
 const ViviendaTab = () => {
-  const [viviendas, setViviendas] = useState<ViviendaType[]>([])
-  const [filtro, setFiltro] = useState<'todos' | 'vigentes' | 'no-vigentes'>('todos')
-  const [error, setError] = useState<string | null>(null)
+  const [viviendas, setViviendas] = useState<ViviendaType[]>([]);
+  const [filtro, setFiltro] = useState<"todos" | "vigentes" | "no-vigentes">(
+    "todos"
+  );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     switch (filtro) {
-      case 'vigentes':
-        setViviendas(viviendasData.filter(v => v.esVigente))
-        break
-      case 'no-vigentes':
-        setViviendas(viviendasData.filter(v => !v.esVigente))
-        break
+      case "vigentes":
+        setViviendas(viviendasData.filter((v) => v.esVigente));
+        break;
+      case "no-vigentes":
+        setViviendas(viviendasData.filter((v) => !v.esVigente));
+        break;
       default:
-        setViviendas(viviendasData)
+        setViviendas(viviendasData);
     }
-  }, [filtro])
+  }, [filtro]);
 
   useEffect(() => {
     // Simulación de consulta a la API
@@ -39,8 +48,8 @@ const ViviendaTab = () => {
     //   };
 
     // loadData()
-    setViviendas(viviendasData)
-  }, [])
+    setViviendas(viviendasData);
+  }, []);
 
   // Condición para mostrar alerta: Si hay error o no hay viviendas disponibles
   const showErrorAlert = error || viviendas.length === 0;
@@ -58,11 +67,18 @@ const ViviendaTab = () => {
         <div>
           <h1 className="text-2xl font-bold">Viviendas</h1>
           <p className="text-sm text-gray-600">
-            Historial de viviendas que han sido utilizadas, con la cabeza de familia como la persona que habita como responsable junto a las demás personas de su círculo. (Si se oprime las viviendas se puede ver sus habitantes)
+            Historial de viviendas que han sido utilizadas, con la cabeza de
+            familia como la persona que habita como responsable junto a las
+            demás personas de su círculo. (Si se oprime las viviendas se puede
+            ver sus habitantes)
           </p>
         </div>
 
-        <Select onValueChange={(value: 'todos' | 'vigentes' | 'no-vigentes') => setFiltro(value)}>
+        <Select
+          onValueChange={(value: "todos" | "vigentes" | "no-vigentes") =>
+            setFiltro(value)
+          }
+        >
           <SelectTrigger className="w-[180px] bg-gray-200">
             <SelectValue placeholder="Filtrar por vigencia" />
           </SelectTrigger>
@@ -76,24 +92,19 @@ const ViviendaTab = () => {
 
       {/* Muestra la alerta si hay un error o si no hay viviendas disponibles */}
       {showErrorAlert && (
-        <Alert variant={alertVariant?? null}>
+        <Alert variant={alertVariant ?? null}>
           <AlertTitle>{alertTitle}</AlertTitle>
-          <AlertDescription>
-            {alertMessage}
-          </AlertDescription>
+          <AlertDescription>{alertMessage}</AlertDescription>
         </Alert>
       )}
 
       <div className="flex flex-row flex-wrap gap-2">
         {viviendas.map((vivienda) => (
-          <ViviendaCard
-            key={vivienda.id_vivienda}
-            vivienda={vivienda}
-          />
+          <ViviendaCard key={vivienda.id_vivienda} vivienda={vivienda} />
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ViviendaTab
+export default ViviendaTab;
