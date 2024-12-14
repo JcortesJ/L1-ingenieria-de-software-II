@@ -1,67 +1,88 @@
 
 const dataPersonas=[
     {
-      "fecha_nacimiento": "1990-05-12",
-      "nombre": "Juan Pérez",
+      "nombre": "Ana Martínez",
+      "fecha_nacimiento": "10/12/1995",
       "vivo": true,
-      "numCasas": 1
+      "numCasas": 0,
+      "departamento": "Antioquia",
+      "municipio": "Envigado"
     },
     {
-      "fecha_nacimiento": "1985-08-23",
-      "nombre": "María González",
+      "nombre": "Carlos Gómez",
+      "fecha_nacimiento": "15/03/1989",
+      "vivo": true,
+      "numCasas": 1,
+      "departamento": "Cundinamarca",
+      "municipio": "Chía"
+    },
+    {
+      "nombre": "Laura Torres",
+      "fecha_nacimiento": "22/07/1992",
       "vivo": false,
-      "numCasas": 0
+      "numCasas": 2,
+      "departamento": "Valle del Cauca",
+      "municipio": "Cali"
     },
     {
-      "fecha_nacimiento": "2001-12-01",
-      "nombre": "Carlos Martínez",
+      "nombre": "José Ramírez",
+      "fecha_nacimiento": "09/11/1985",
       "vivo": true,
-      "numCasas": 2
+      "numCasas": 3,
+      "departamento": "Atlántico",
+      "municipio": "Barranquilla"
     },
     {
-      "fecha_nacimiento": "1995-03-15",
-      "nombre": "Ana López",
-      "vivo": true,
-      "numCasas": 1
-    },
-    {
-      "fecha_nacimiento": "1978-07-30",
-      "nombre": "Luis Rodríguez",
+      "nombre": "María Pérez",
+      "fecha_nacimiento": "01/05/1978",
       "vivo": false,
-      "numCasas": 3
+      "numCasas": 0,
+      "departamento": "Bolívar",
+      "municipio": "Cartagena"
     },
     {
-      "fecha_nacimiento": "1992-11-25",
-      "nombre": "Sofía Torres",
+      "nombre": "Luis Morales",
+      "fecha_nacimiento": "18/08/2000",
       "vivo": true,
-      "numCasas": 1
+      "numCasas": 1,
+      "departamento": "Santander",
+      "municipio": "Bucaramanga"
     },
     {
-      "fecha_nacimiento": "1980-04-10",
-      "nombre": "Andrés Morales",
+      "nombre": "Elena Fernández",
+      "fecha_nacimiento": "27/02/1993",
+      "vivo": true,
+      "numCasas": 2,
+      "departamento": "Risaralda",
+      "municipio": "Pereira"
+    },
+    {
+      "nombre": "Andrés López",
+      "fecha_nacimiento": "05/06/1982",
       "vivo": false,
-      "numCasas": 0
+      "numCasas": 4,
+      "departamento": "Córdoba",
+      "municipio": "Montería"
     },
     {
-      "fecha_nacimiento": "2003-09-19",
-      "nombre": "Laura Castillo",
+      "nombre": "Claudia Ríos",
+      "fecha_nacimiento": "14/09/1997",
       "vivo": true,
-      "numCasas": 2
+      "numCasas": 0,
+      "departamento": "Meta",
+      "municipio": "Villavicencio"
     },
     {
-      "fecha_nacimiento": "1965-01-06",
-      "nombre": "Francisco Ortiz",
-      "vivo": false,
-      "numCasas": 4
-    },
-    {
-      "fecha_nacimiento": "1998-06-21",
-      "nombre": "Elena Ramírez",
+      "nombre": "Francisco Sánchez",
+      "fecha_nacimiento": "23/12/1990",
       "vivo": true,
-      "numCasas": 1
+      "numCasas": 1,
+      "departamento": "Nariño",
+      "municipio": "Pasto"
     }
   ]
   
+  
 
-export type dataPersona = typeof dataPersonas[0]
+export type dataPersonaType = typeof dataPersonas[0]
 export default dataPersonas

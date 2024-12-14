@@ -9,10 +9,10 @@ import ViviendaTab from "@/components/ViviendaTab"
 const queryPage = () => {
     return (
         <div className="w-full h-full p-16">
-            <h1 className="text-3xl font-bold mb-4">Realice las consultas y observe su resultado</h1>
-            <Tabs defaultValue="Personas" className="w-full">
-                <TabsList className="w-full flex">
-                    <TabsTrigger className="flex-1" value="Personas">Personas</TabsTrigger>
+            <h1 className="text-3xl font-bold mb-4 ">Realice las consultas y observe su resultado</h1>
+            <Tabs defaultValue="Personas" className="w-full ">
+                <TabsList className="w-full flex bg-[#546057] text-white ">
+                    <TabsTrigger className="flex-1 data-[state=active]:bg-[#C1C8C1] " value="Personas">Personas</TabsTrigger>
                     <TabsTrigger className="flex-1" value="Viviendas">Viviendas</TabsTrigger>
                     <TabsTrigger  className="flex-1" value="Municipios">Municipios</TabsTrigger>
                     <TabsTrigger className="flex-1" value="Departamentos">Departamentos</TabsTrigger>
