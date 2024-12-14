@@ -1,8 +1,8 @@
-import { dataPersonaType } from "@/testdata/dataPersona";
+import { PersonaType } from "@/testdata/dataPersona";
 import { CircleUserRound, Calendar, Activity, Home } from 'lucide-react';
 import { Card, CardContent } from "./ui/card";
 
-const PersonaCard = ({ persona }: { persona: dataPersonaType }) => {
+const PersonaCard = ({ persona }: { persona: PersonaType }) => {
   return (
     <Card className="w-48 h-60 p-0 bg-gray-100 border-gray-500">
       <CardContent className="p-4 flex flex-col h-full">
