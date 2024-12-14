@@ -23,29 +23,46 @@ import {
 } from "@/components/ui/select"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from 'lucide-react'
+import { Switch } from "@/components/ui/switch"
 import dataPersonas from "@/testdata/dataPersona"
 
 const formSchema = z.object({
     livingStatus: z.enum(["all", "alive", "deceased"]),
     houses: z.enum(["all", "0", "1", "2", "3+"]),
     department: z.string().optional(),
+    searchName: z.string().optional(),
+    isHeadOfFamily: z.boolean(),
 })
-const getPersonasDepartamento = async () => { }
 
 const aplicarFiltros = (personas: any, values: any) => {
     const filteredPersonas = personas.filter((persona: any) => {
+        // Filtrar por estado de vida
         if (values.livingStatus !== "all" && persona.vivo !== (values.livingStatus === "alive")) return false
+        
+        // Filtrar por número de casas
         if (values.houses !== "all") {
             if (values.houses === "3+" && persona.numCasas < 3) return false
             if (values.houses !== "3+" && persona.numCasas !== parseInt(values.houses)) return false
         }
+        
+        // Filtrar por nombre
+        if (values.searchName && !persona.nombre.toLowerCase().startsWith(values.searchName.toLowerCase())) return false
+        
+        // Filtrar por departamento
+        if (values.department && persona.departamento && !persona.departamento.toLowerCase().startsWith(values.department.toLowerCase())) return false
+        
+        // Filtrar solo cabezas de familia
+        if (values.isHeadOfFamily && persona.id !== persona.id_cabeza_familia) return false
+        
         return true
     })
 
     return filteredPersonas
 }
+
 const PersonaTab = () => {
     const [personas, setPersonas] = useState(dataPersonas)
+    const [filteredPersonas, setFilteredPersonas] = useState(dataPersonas)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -55,96 +72,39 @@ const PersonaTab = () => {
             livingStatus: "all",
             houses: "all",
             department: "",
+            searchName: "",
+            isHeadOfFamily: false,
         },
     })
 
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log(values)
-        setIsLoading(true)
-        setError(null)
-        try {
-            // Datos mock
-            if (values.department) {
-                const mockData = [
-                    {
-                        nombre: "Juan Pérez",
-                        fecha_nacimiento: "15/05/1985",
-                        vivo: true,
-                        numCasas: 2,
-                        departamento: "Antioquia",
-                        municipio: "Medellín"
-                    },
-                    {
-                        nombre: "María García",
-                        fecha_nacimiento: "22/11/1990",
-                        vivo: true,
-                        numCasas: 1,
-                        departamento: "Cundinamarca",
-                        municipio: "Bogotá"
-                    },
-                    {
-                        nombre: "Carlos Rodríguez",
-                        fecha_nacimiento: "03/08/1978",
-                        vivo: false,
-                        numCasas: 3,
-                        departamento: "Valle del Cauca",
-                        municipio: "Cali"
-                    },
-                    {
-                        nombre: "Ana Martínez",
-                        fecha_nacimiento: "10/12/1995",
-                        vivo: true,
-                        numCasas: 0,
-                        departamento: "Antioquia",
-                        municipio: "Envigado"
-                    }
-                ]
-                let personasFiltradas = aplicarFiltros(mockData, values)
-                if (personasFiltradas.length === 0) {
-                    setError('No se encontraron resultados para los filtros seleccionados')
-                    setPersonas([])
-                } else {
-                    setPersonas(personasFiltradas)
-                }
-
-            } else {
-                // Aplicar filtros locales
-                let filteredPersonas = aplicarFiltros(dataPersonas, values)
-                console.log(filteredPersonas.length)
-                console.log("aplique los filtros correctamente ")
-                if (filteredPersonas.length === 0) {
-                    setError('No se encontraron resultados para los filtros seleccionados')
-                    setPersonas([])
-                } else {
-                    setPersonas(filteredPersonas)
-                }
-
-            }
-
-
-
-            // Código para consultar la API (comentado para uso futuro)
-            /*
-            const response = await fetch(`/api/personas?department=${encodeURIComponent(values.department || '')}`)
-            if (!response.ok) {
-              throw new Error('Error al obtener los datos')
-            }
-            const data = await response.json()
-            setPersonas(data)
-            */
-
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Ha ocurrido un error')
-        } finally {
-            setIsLoading(false)
+    const applyFilters = (values: z.infer<typeof formSchema>) => {
+        const filteredData = aplicarFiltros(dataPersonas, values)
+        if (filteredData.length === 0) {
+            setError('No se encontraron resultados para los filtros seleccionados')
+            setFilteredPersonas([])
+        } else {
+            setError(null)
+            setFilteredPersonas(filteredData)
         }
     }
+
+    // Se aplica el filtro cada vez que un valor en el formulario cambia
+    useEffect(() => {
+        const values = form.getValues()
+        applyFilters(values)
+    }, [
+        form.watch("livingStatus"),
+        form.watch("houses"),
+        form.watch("department"),
+        form.watch("searchName"),
+        form.watch("isHeadOfFamily")
+    ])
 
     return (
         <div className="container mx-auto py-8">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mb-8">
-                    <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4">
+                <form className="space-y-6 mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
                         <FormField
                             control={form.control}
                             name="livingStatus"
@@ -154,7 +114,7 @@ const PersonaTab = () => {
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                             <SelectTrigger className="bg-gray-200">
-                                                <SelectValue  placeholder="Seleccionar estado" />
+                                                <SelectValue placeholder="Seleccionar estado" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -173,12 +133,12 @@ const PersonaTab = () => {
                                 <FormItem>
                                     <FormLabel className="font-bold">Número de casas</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl  >
+                                        <FormControl>
                                             <SelectTrigger className="bg-gray-200">
                                                 <SelectValue placeholder="Seleccionar número de casas" />
                                             </SelectTrigger>
                                         </FormControl>
-                                        <SelectContent >
+                                        <SelectContent>
                                             <SelectItem value="all">Todos</SelectItem>
                                             <SelectItem value="0">0</SelectItem>
                                             <SelectItem value="1">1</SelectItem>
@@ -201,12 +161,32 @@ const PersonaTab = () => {
                                 </FormItem>
                             )}
                         />
-                        
+                        <FormField
+                            control={form.control}
+                            name="searchName"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="font-bold">Buscar por nombre</FormLabel>
+                                    <FormControl>
+                                        <Input className="bg-gray-200" placeholder="Buscar por nombre" {...field} />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="isHeadOfFamily"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center gap-2">
+                                    
+                                    <FormControl>
+                                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                    </FormControl>
+                                    <FormLabel className="font-bold p-0 m-0">Solo Cabezas de Familia</FormLabel>
+                                </FormItem>
+                            )}
+                        />
                     </div>
-                    <Button type="submit" className="w-60 justify-self-center bg-[#546057]" disabled={isLoading}>
-                            {isLoading ? 'Cargando...' : 'Buscar personas'}
-                    </Button>
-
                 </form>
             </Form>
 
@@ -219,7 +199,7 @@ const PersonaTab = () => {
             )}
 
             <div className="flex flex-row flex-wrap gap-2">
-                {personas.map((persona, index) => (
+                {filteredPersonas.map((persona, index) => (
                     <PersonaCard persona={persona} key={index} />
                 ))}
             </div>
@@ -228,4 +208,3 @@ const PersonaTab = () => {
 }
 
 export default PersonaTab
-
