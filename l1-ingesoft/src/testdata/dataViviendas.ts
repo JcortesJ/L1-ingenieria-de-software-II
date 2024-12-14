@@ -1,4 +1,4 @@
-const viviendasData=[
+const viviendasData:ViviendaType[]=[
     {
       "id_vivienda": 1,
       "id_municipio": 101,
@@ -51,6 +51,15 @@ const viviendasData=[
     }
   ]
 
+export interface ViviendaType {
+    id_vivienda: number; // ID único de la vivienda
+    id_municipio: number; // ID del municipio donde está ubicada la vivienda
+    direccion: string; // Dirección completa de la vivienda
+    tipo: "Casa" | "Apartamento"; // Tipo de vivienda (puedes agregar más opciones si es necesario)
+    id_cabeza_hogar: number; // ID de la persona cabeza del hogar
+    nombre_cabeza_hogar: string; // Nombre de la persona cabeza del hogar
+    modalidad_ocupacion: "Propietario" | "Arrendatario" | "Prestada"; // Modalidad de ocupación de la vivienda
+    esVigente: boolean; // Si la vivienda está activa o vigente
+  }
   
 export default viviendasData;
-export type viviendaType = typeof viviendasData[0];

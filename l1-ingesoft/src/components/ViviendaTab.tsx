@@ -10,27 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import viviendasData from '@/testdata/dataViviendas'
+import viviendasData, { ViviendaType } from '@/testdata/dataViviendas'
 import ViviendaCard from './ViviendaCard'
 
-interface Vivienda {
-  id_vivienda: number
-  id_municipio: number
-  direccion: string
-  tipo: string
-  id_cabeza_hogar: number
-  nombre_cabeza_hogar: string
-  modalidad_ocupacion: string
-  esVigente: boolean
-}
 
 
 
 const ViviendaTab = () => {
-  const [viviendas, setViviendas] = useState<Vivienda[]>(viviendasData)
+  const [viviendas, setViviendas] = useState<ViviendaType[]>(viviendasData)
   const [filtro, setFiltro] = useState<'todos' | 'vigentes' | 'no-vigentes'>('todos')
-  const [selectedVivienda, setSelectedVivienda] = useState<Vivienda | null>(null)
-  
 
   useEffect(() => {
     switch (filtro) {

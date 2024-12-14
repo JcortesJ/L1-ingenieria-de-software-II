@@ -8,18 +8,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-interface Vivienda {
-    id_vivienda: number
-    id_municipio: number
-    direccion: string
-    tipo: string
-    id_cabeza_hogar: number
-    nombre_cabeza_hogar: string
-    modalidad_ocupacion: string
-    esVigente: boolean
-  }
+import { ViviendaType } from '@/testdata/dataViviendas'
+
   
-const ViviendaCard = ({ vivienda}: { vivienda: Vivienda }) => {
+const ViviendaCard = ({ vivienda}: { vivienda: ViviendaType }) => {
     const [modalOpen, setModalOpen] = useState(false)
     const [personasACargo, setPersonasACargo] = useState<string[]>([])
 
