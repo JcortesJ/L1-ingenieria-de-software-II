@@ -1,9 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Map, User } from 'lucide-react'
-import { DepartamentoType } from "@/testdata/dataDepartamento"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Map, User } from "lucide-react";
+import { DepartamentoType } from "@/testdata/dataDepartamento";
 
 interface DepartamentoCardProps {
-  departamento: DepartamentoType
+  departamento: DepartamentoType;
 }
 
 const DepartamentoCard = ({ departamento }: DepartamentoCardProps) => {
@@ -20,11 +21,10 @@ const DepartamentoCard = ({ departamento }: DepartamentoCardProps) => {
           <p className="flex items-center gap-2">
             <span className="font-medium">{departamento.nombre}</span>
           </p>
-          
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default DepartamentoCard
+export default DepartamentoCard;
