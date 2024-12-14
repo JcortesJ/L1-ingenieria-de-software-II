@@ -25,7 +25,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-import dataPersonas from "@/testdata/dataPersona";
+import dataPersonas, { PersonaType } from "@/testdata/dataPersona";
 //import { fetchPersonas } from "@/actions/personas";
 
 const formSchema = z.object({
@@ -37,7 +37,7 @@ const formSchema = z.object({
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const aplicarFiltros = (personas: any, values: any) => {
+const aplicarFiltros = (personas: PersonaType[], values: any) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const filteredPersonas = personas.filter((persona: any) => {
     // Filtrar por estado de vida
