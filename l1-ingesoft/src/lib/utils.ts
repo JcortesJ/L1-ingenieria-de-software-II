@@ -47,10 +47,10 @@ export function getInputData(entityName: string) {
         },
       },
       {
-        label: "Ingrese el identificador del cabeza de familia",
+        label: "Ingrese el identificador de la vivienda",
         type: "text",
         placeholder: "Ej: 1234567890",
-        id: "idCabezaFamilia",
+        id: "idVivienda",
         defaultValue: "",
         required: true,
         dependsFrom: {
@@ -67,7 +67,7 @@ export function getInputData(entityName: string) {
         required: true,
         dependsFrom: {
           field: "esCabezaFamilia",
-          value: false,
+          value: true,
         },
       },
       {
@@ -79,7 +79,7 @@ export function getInputData(entityName: string) {
         required: true,
         dependsFrom: {
           field: "esCabezaFamilia",
-          value: false,
+          value: true,
         },
       },
       {
@@ -90,8 +90,8 @@ export function getInputData(entityName: string) {
         defaultValue: new Date().toISOString().split("T")[0],
         required: true,
         dependsFrom: {
-          field: "esVigente",
-          value: false,
+          field: "esCabezaFamilia",
+          value: true,
         },
       },
       {
@@ -100,7 +100,11 @@ export function getInputData(entityName: string) {
         placeholder: "Es vigente",
         id: "esVigente",
         defaultValue: true,
-        required: false,
+        required: true,
+        dependsFrom: {
+          field: "esCabezaFamilia",
+          value: true,
+        },
       },
       {
         label: "¿Tiene una vivienda?",
