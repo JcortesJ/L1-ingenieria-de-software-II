@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Map, User } from 'lucide-react'
+import { Map } from 'lucide-react'
 import { DepartamentoType } from "@/testdata/dataDepartamento"
 
 interface DepartamentoCardProps {

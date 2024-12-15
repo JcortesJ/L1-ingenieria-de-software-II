@@ -14,8 +14,10 @@ import { fetchMiembrosFamilia } from '@/actions/vivienda'
 const ViviendaCard = ({ vivienda }: { vivienda: ViviendaType }) => {
   const [modalOpen, setModalOpen] = useState(false)
   const [personasACargo, setPersonasACargo] = useState<string[]>([])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null)
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const loadMiembrosFamilia = async (id:string) => {
     const { data, error } = await fetchMiembrosFamilia(id); // Llama a la función fetch
 

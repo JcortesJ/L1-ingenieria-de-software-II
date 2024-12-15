@@ -37,7 +37,7 @@ export const EditPersonaModal = ({ isOpen, onClose, persona }: EditPersonaModalP
     } catch (error) {
       toast({
         title: "Error",
-        description: "No se pudo actualizar los datos de la persona.",
+        description: (error as Error).message,
         variant: "destructive",
         duration: 3000,
       });

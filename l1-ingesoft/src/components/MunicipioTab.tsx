@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Alert, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from 'lucide-react'
 import MunicipioCard from "./MunicipioCard"
 import dataMunicipios, { MunicipioType } from "@/testdata/dataMunicipios"
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { fetchMunicipios } from "@/actions/municipios"
 
 const MunicipioTab = () => {

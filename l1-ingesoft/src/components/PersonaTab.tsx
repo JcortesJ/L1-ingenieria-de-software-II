@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect, use } from "react"
+import { useState, useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { set, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import * as z from "zod"
 import PersonaCard from "./PersonaCard"
-import { Button } from "@/components/ui/button"
+
 import {
     Form,
     FormControl,
@@ -24,7 +24,8 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from 'lucide-react'
 import { Switch } from "@/components/ui/switch"
-import dataPersonas from "@/testdata/dataPersona"
+import dataPersonas, { PersonaType } from "@/testdata/dataPersona"
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { fetchPersonas } from "@/actions/personas"
 
 const formSchema = z.object({
@@ -35,8 +36,8 @@ const formSchema = z.object({
     isHeadOfFamily: z.boolean(),
 })
 
-const aplicarFiltros = (personas: any, values: any) => {
-    const filteredPersonas = personas.filter((persona: any) => {
+const aplicarFiltros = (personas: PersonaType[], values: z.infer<typeof formSchema>):PersonaType[] => {
+    const filteredPersonas = personas.filter((persona: PersonaType) => {
         // Filtrar por estado de vida
         if (values.livingStatus !== "all" && persona.vivo !== (values.livingStatus === "alive")) return false
 
@@ -64,7 +65,7 @@ const aplicarFiltros = (personas: any, values: any) => {
 const PersonaTab = () => {
 
 
-    const [filteredPersonas, setFilteredPersonas] = useState(dataPersonas)
+    const [filteredPersonas, setFilteredPersonas] = useState<PersonaType[]>([])
 
     const [error, setError] = useState<string | null>(null)
 
@@ -111,13 +112,7 @@ const PersonaTab = () => {
     useEffect(() => {
         const values = form.getValues()
         applyFilters(values)
-    }, [
-        form.watch("livingStatus"),
-        form.watch("houses"),
-        form.watch("department"),
-        form.watch("searchName"),
-        form.watch("isHeadOfFamily")
-    ])
+    }, [form])
 
     return (
         <div className="container mx-auto py-8">
