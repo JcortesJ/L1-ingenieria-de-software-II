@@ -1,13 +1,10 @@
-
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "../../../libs/prisma"
-import { NextApiRequest } from "next";
 
 export async function GET(
-    request: Request,
-    { params }: { params: { id: string } }
+    req: Request,
+    { params }: { params: Promise<{ id: string }> }
 ) {
-
     const { id } = await params
     try {
         const personasMantenidas = await prisma.persona.findMany({

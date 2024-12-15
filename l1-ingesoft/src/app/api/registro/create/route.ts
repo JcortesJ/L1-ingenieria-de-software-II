@@ -9,8 +9,7 @@ export async function POST(request: NextRequest) {
             idCdf,
             modalidadOcupacion,
             fechaInicio,
-            fechaFin,
-            esVigente
+            fechaFin
         } = await request.json();
 
         const viviendaOcupada = await prisma.registro_residencial.findFirst({

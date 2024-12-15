@@ -26,8 +26,7 @@ export async function POST(request: NextRequest) {
             { message: 'Municipio correctamente', data: municipio },
             { status: 201 }
         );
-    } catch (error: any) {
-        // console.log('Error al crear municipio', error);
+    } catch (error) {
         if (error instanceof Error) {
             return NextResponse.json(
                 { message: 'Error al crear municipio', error: error.message },

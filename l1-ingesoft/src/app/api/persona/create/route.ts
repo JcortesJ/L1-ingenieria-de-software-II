@@ -2,7 +2,6 @@
 
 import { NextRequest } from "next/server";
 import { prisma } from "../../../libs/prisma"
-import { connect } from "http2";
 
 export async function POST(request: NextRequest) {
     try {
