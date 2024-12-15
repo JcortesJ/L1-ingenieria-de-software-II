@@ -27,6 +27,14 @@ export function getInputData(entityName: string) {
         required: true,
       },
       {
+        label: "¿Está vivo?",
+        type: "checkbox",
+        placeholder: "Está vivo",
+        id: "vivo",
+        defaultValue: true,
+        required: true,
+      },
+      {
         label: "¿Es cabeza de familia?",
         type: "checkbox",
         placeholder: "Es cabeza de familia",
