@@ -1,13 +1,11 @@
 
 'use client'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import PersonaCard from "./PersonaCard"
-
-
 import {
   Form,
   FormControl,
@@ -24,24 +22,18 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle } from 'lucide-react'
-import { Switch } from "@/components/ui/switch"
-import dataPersonas, { PersonaType } from "@/testdata/dataPersona"
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { fetchPersonas } from "@/actions/personas"
 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import dataPersonas, { PersonaType } from "@/testdata/dataPersona";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FormularioModal } from "./FormularioModal";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getInputData } from "@/lib/utils";
 //import { fetchPersonas } from "@/actions/personas";
 

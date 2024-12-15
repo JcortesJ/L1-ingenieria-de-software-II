@@ -82,14 +82,7 @@ const MunicipioTab = () => {
   }, [departamentoFilter, municipios]);
 
 
-        if (filtered.length === 0 && departamentoFilter !== "") {
-            setError("No se encontraron municipios que coincidan con el filtro de departamento.")
-        } else {
-            setError(null)
-        }
-
-        setFilteredMunicipios(filtered)
-    }, [departamentoFilter, municipios])
+        
 
     const handleOpenModal = (municipio: MunicipioType) => {
         console.log("Abriendo modal para:", municipio.nombre)
@@ -178,8 +171,7 @@ const MunicipioTab = () => {
             }
 
         </div>
-      ) : null}
-    </div>
+     
   );
 };
 

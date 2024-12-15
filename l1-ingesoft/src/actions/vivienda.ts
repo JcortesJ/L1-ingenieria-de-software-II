@@ -26,18 +26,11 @@ export const fetchMiembrosFamilia = async (id: string) => {
     if (!response.ok) {
       throw new Error("Error a los habitantes del hogar");
     }
-
-  };
-
-
- 
-
-
     const data = await response.json();
     return { data, error: null };
   } catch (err) {
     console.error("Error en la consulta API: ", err);
-    return { data: null, error: "No se pudo cargar los datos de viviendas." };
+    return { data: null, error: "No se pudo cargar los datos ." };
   }
 };
 

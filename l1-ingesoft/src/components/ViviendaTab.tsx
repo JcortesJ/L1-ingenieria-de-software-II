@@ -1,13 +1,9 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import viviendasData, { ViviendaType } from '@/testdata/dataViviendas'
-import ViviendaCard from './ViviendaCard'
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { fetchViviendas } from '@/actions/vivienda'
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert' // Importa el componente de alerta
 
 
 import { useState, useEffect } from "react";
