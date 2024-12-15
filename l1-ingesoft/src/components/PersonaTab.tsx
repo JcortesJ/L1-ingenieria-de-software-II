@@ -112,7 +112,13 @@ const PersonaTab = () => {
     useEffect(() => {
         const values = form.getValues()
         applyFilters(values)
-    }, [form])
+    }, [
+        form.watch("livingStatus"),
+        form.watch("houses"),
+        form.watch("department"),
+        form.watch("searchName"),
+        form.watch("isHeadOfFamily"),
+    ])
 
     return (
         <div className="container mx-auto py-8">
