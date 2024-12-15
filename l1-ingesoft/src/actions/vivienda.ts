@@ -27,6 +27,12 @@ export const fetchMiembrosFamilia = async (id: string) => {
       throw new Error("Error a los habitantes del hogar");
     }
 
+  };
+
+
+ 
+
+
     const data = await response.json();
     return { data, error: null };
   } catch (err) {
@@ -48,3 +54,22 @@ export const createVivienda = async (data: Record<string, any>) => {
     return { data: null, error: "No se pudo crear la vivienda." };
   }
 };
+  interface UpdateViviendaData {
+    direccion: string;
+  }
+  
+  export const updateDireccionVivienda = async (id: number, data: UpdateViviendaData) => {
+    const response = await fetch(`/api/vivienda/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+  
+    if (!response.ok) {
+      throw new Error('Failed to update vivienda');
+    }
+  
+    return response.json();
+  };

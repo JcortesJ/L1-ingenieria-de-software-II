@@ -1,21 +1,27 @@
-import { Home, User, Key, CheckCircle, XCircle } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+
+import { Home, User, Key, CheckCircle, XCircle, Edit } from 'lucide-react'
+import { Card, CardContent } from "@/components/ui/card"
+import { useState } from 'react'
+import { Button } from "@/components/ui/button"
+
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { ViviendaType } from "@/testdata/dataViviendas";
-import { fetchMiembrosFamilia } from "@/actions/vivienda";
+
+} from "@/components/ui/dialog"
+import { ViviendaType } from '@/testdata/dataViviendas'
+import { fetchMiembrosFamilia } from '@/actions/vivienda'
+import { EditViviendaModal } from './EditViviendaModal'
 
 const ViviendaCard = ({ vivienda }: { vivienda: ViviendaType }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [personasACargo, setPersonasACargo] = useState<string[]>([]);
+  const [modalOpen, setModalOpen] = useState(false)
+  const [personasACargo, setPersonasACargo] = useState<string[]>([])
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null)
+  const [isModalEdit, setIsModalEdit] = useState(false);
+
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const loadMiembrosFamilia = async (id: string) => {
@@ -45,20 +51,36 @@ const ViviendaCard = ({ vivienda }: { vivienda: ViviendaType }) => {
 
   return (
     <>
-      <Card
-        className={`w-64 cursor-pointer transition-all duration-300 bg-gray-100 border-gray-500 ${
-          vivienda.esVigente ? "hover:shadow-lg" : "opacity-60"
-        }`}
-        onClick={handleViviendaClick}
-      >
+
+      <Card className={` relative w-64 cursor-pointer transition-all duration-300 bg-gray-100 border-gray-500 ${vivienda.esVigente ? 'hover:shadow-lg' : 'opacity-60'}`} >
+
         <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            hidden={!vivienda.esVigente}
+            className={`absolute top-2 right-2 ${vivienda.esVigente ? 'flex' : 'hidden'}`}
+            onClick={() => { if (vivienda.esVigente) setIsModalEdit(true) }}
+          >
+            <Edit className="h-4 w-4" />
+          </Button>
+          <div className="flex items-center gap-2 mb-2">
             <Home className="w-6 h-6 text-primary" />
             {vivienda.esVigente ? (
               <div className="w-5 h-5 rounded-full bg-green-500" />
             ) : (
               <div className="w-5 h-5 rounded-full bg-red-500" />
             )}
+
+            <Button
+              variant="outline"
+              size="sm"
+              hidden={!vivienda.esVigente}
+              className={`border-green-800 ${vivienda.esVigente ? 'flex' : 'hidden'}`}
+              onClick={handleViviendaClick}
+            >
+              Habitantes
+            </Button>
           </div>
           <h3 className="font-bold mb-2">{vivienda.direccion}</h3>
           <div className="text-sm space-y-1">
@@ -82,6 +104,11 @@ const ViviendaCard = ({ vivienda }: { vivienda: ViviendaType }) => {
           </div>
         </CardContent>
       </Card>
+      <EditViviendaModal
+        isOpen={isModalEdit}
+        onClose={() => setIsModalEdit(false)}
+        vivienda={vivienda}
+      />
 
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
         <DialogContent>

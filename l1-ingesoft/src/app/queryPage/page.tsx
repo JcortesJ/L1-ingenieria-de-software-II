@@ -1,3 +1,6 @@
+
+
+
 "use client";
 import DepartamentoTab from "@/components/DepartamentoTab";
 import MunicipioTab from "@/components/MunicipioTab";
@@ -6,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ViviendaTab from "@/components/ViviendaTab";
 import { useRouter } from "next/navigation";
+ import { Toaster } from "@/components/ui/toaster"
 
 const queryPage = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -57,8 +61,10 @@ const queryPage = () => {
           <DepartamentoTab />
         </TabsContent>
       </Tabs>
+       <Toaster />
     </div>
   );
 };
+
 
 export default queryPage;

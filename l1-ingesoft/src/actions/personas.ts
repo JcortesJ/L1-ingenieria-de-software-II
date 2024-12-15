@@ -9,6 +9,10 @@ export const fetchPersonas = async () => {
       throw new Error("Error al obtener los datos de la API");
     }
 
+  };
+
+  
+
     const data = await response.json();
     return { data, error: null }; // Retorna los datos y un valor null para el error
   } catch (err) {
@@ -33,3 +37,25 @@ export const createPersona = async (data: Record<string, any>) => {
     return { data: null, error: "No se pudo crear la persona." };
   }
 };
+
+ interface UpdatePersonaData {
+    nombre: string;
+    vivo: boolean;
+  }
+  
+  export const updatePersona = async (id: number, data: UpdatePersonaData) => {
+    const response = await fetch(`/api/personas/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+  
+    if (!response.ok) {
+      throw new Error('Failed to update persona');
+    }
+  
+    return response.json();
+  };
+  

@@ -1,4 +1,14 @@
-"use client";
+
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import viviendasData, { ViviendaType } from '@/testdata/dataViviendas'
+import ViviendaCard from './ViviendaCard'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { fetchViviendas } from '@/actions/vivienda'
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert' // Importa el componente de alerta
+
 
 import { useState, useEffect } from "react";
 import {
@@ -15,12 +25,11 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"; // 
 import { FormularioModal } from "./FormularioModal";
 import { getInputData } from "@/lib/utils";
 const ViviendaTab = () => {
-  const [viviendas, setViviendas] = useState<ViviendaType[]>([]);
-  const [filtro, setFiltro] = useState<"todos" | "vigentes" | "no-vigentes">(
-    "todos"
-  );
+  const [viviendas, setViviendas] = useState<ViviendaType[]>([])
+  const [filtro, setFiltro] = useState<'todos' | 'vigentes' | 'no-vigentes'>('todos')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null)
+
 
   useEffect(() => {
     switch (filtro) {

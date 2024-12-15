@@ -1,12 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { MapPin, User, Building2 } from 'lucide-react'
 import { MunicipioType } from "@/testdata/dataMunicipios"
 
 interface MunicipioCardProps {
   municipio: MunicipioType
+  onCambiarAlcalde: () => void
 }
 
-const MunicipioCard = ({ municipio }: MunicipioCardProps) => {
+const MunicipioCard = ({ municipio, onCambiarAlcalde }: MunicipioCardProps) => {
   return (
     <Card className="w-full max-w-sm bg-gray-100 border-gray-500">
       <CardHeader>
@@ -24,9 +26,18 @@ const MunicipioCard = ({ municipio }: MunicipioCardProps) => {
           </p>
           <p className="flex items-center gap-2">
             <User className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600">Gobernador:</span>
+            <span className="text-sm text-gray-600">Alcalde:</span>
             <span className="font-medium">{municipio.nombre_gobernador}</span>
           </p>
+          <Button 
+            onClick={() => {
+              console.log("Botón 'Cambiar Alcalde' clickeado");
+              onCambiarAlcalde();
+            }} 
+            className="mt-2"
+          >
+            Cambiar Alcalde
+          </Button>
         </div>
       </CardContent>
     </Card>
