@@ -105,11 +105,7 @@ export function FormularioModal({
           <p className="text-sm text-gray-500">
             Todos los campos con * son obligatorios
           </p>
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
+
           <form className="grid gap-4">
             {inputs.map((input) =>
               shouldShowField(input) ? (
@@ -169,6 +165,11 @@ export function FormularioModal({
               </Button>
             </section>
           </form>
+          {error && (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
         </div>
       </ModalContent>
     </Modal>
