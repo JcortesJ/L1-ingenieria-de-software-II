@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState, useEffect } from "react"
@@ -6,15 +7,17 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import PersonaCard from "./PersonaCard"
 
+
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
+
     Select,
     SelectContent,
     SelectItem,
@@ -28,68 +31,108 @@ import dataPersonas, { PersonaType } from "@/testdata/dataPersona"
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { fetchPersonas } from "@/actions/personas"
 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import dataPersonas, { PersonaType } from "@/testdata/dataPersona";
+import { FormularioModal } from "./FormularioModal";
+import { getInputData } from "@/lib/utils";
+//import { fetchPersonas } from "@/actions/personas";
+
+
 const formSchema = z.object({
-    livingStatus: z.enum(["all", "alive", "deceased"]),
-    houses: z.enum(["all", "0", "1", "2", "3+"]),
-    department: z.string().optional(),
-    searchName: z.string().optional(),
-    isHeadOfFamily: z.boolean(),
-})
+  livingStatus: z.enum(["all", "alive", "deceased"]),
+  houses: z.enum(["all", "0", "1", "2", "3+"]),
+  department: z.string().optional(),
+  searchName: z.string().optional(),
+  isHeadOfFamily: z.boolean(),
+});
+
 
 const aplicarFiltros = (personas: PersonaType[], values: z.infer<typeof formSchema>):PersonaType[] => {
     const filteredPersonas = personas.filter((persona: PersonaType) => {
         // Filtrar por estado de vida
         if (values.livingStatus !== "all" && persona.vivo !== (values.livingStatus === "alive")) return false
 
-        // Filtrar por número de casas
-        if (values.houses !== "all") {
-            if (values.houses === "3+" && persona.numCasas < 3) return false
-            if (values.houses !== "3+" && persona.numCasas !== parseInt(values.houses)) return false
-        }
+    // Filtrar por estado de vida
+    if (
+      values.livingStatus !== "all" &&
+      persona.vivo !== (values.livingStatus === "alive")
+    )
+      return false;
 
-        // Filtrar por nombre
-        if (values.searchName && !persona.nombre.toLowerCase().startsWith(values.searchName.toLowerCase())) return false
 
-        // Filtrar por departamento
-        if (values.department && persona.departamento && !persona.departamento.toLowerCase().startsWith(values.department.toLowerCase())) return false
+    // Filtrar por número de casas
+    if (values.houses !== "all") {
+      if (values.houses === "3+" && persona.numCasas < 3) return false;
+      if (
+        values.houses !== "3+" &&
+        persona.numCasas !== parseInt(values.houses)
+      )
+        return false;
+    }
 
-        // Filtrar solo cabezas de familia
-        if (values.isHeadOfFamily && persona.id !== persona.id_cabeza_familia) return false
+    // Filtrar por nombre
+    if (
+      values.searchName &&
+      !persona.nombre.toLowerCase().startsWith(values.searchName.toLowerCase())
+    )
+      return false;
 
-        return true
-    })
+    // Filtrar por departamento
+    if (
+      values.department &&
+      persona.departamento &&
+      !persona.departamento
+        .toLowerCase()
+        .startsWith(values.department.toLowerCase())
+    )
+      return false;
 
-    return filteredPersonas
-}
+    // Filtrar solo cabezas de familia
+    if (values.isHeadOfFamily && persona.id !== persona.id_cabeza_familia)
+      return false;
+
+    return true;
+  });
+
+  return filteredPersonas;
+};
 
 const PersonaTab = () => {
+  const [filteredPersonas, setFilteredPersonas] = useState(dataPersonas);
+
+  const [error, setError] = useState<string | null>(null);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      livingStatus: "all",
+      houses: "all",
+      department: "",
+      searchName: "",
+      isHeadOfFamily: false,
+    },
+  });
 
 
-    const [filteredPersonas, setFilteredPersonas] = useState<PersonaType[]>([])
+  const applyFilters = useCallback((values: z.infer<typeof formSchema>) => {
+    const filteredData = aplicarFiltros(dataPersonas, values);
+    if (filteredData.length === 0) {
+      setError("No se encontraron resultados para los filtros seleccionados");
+      setFilteredPersonas([]);
+    } else {
+      setError(null);
+      setFilteredPersonas(filteredData);
 
-    const [error, setError] = useState<string | null>(null)
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            livingStatus: "all",
-            houses: "all",
-            department: "",
-            searchName: "",
-            isHeadOfFamily: false,
-        },
-    })
-
-    const applyFilters = (values: z.infer<typeof formSchema>) => {
-        const filteredData = aplicarFiltros(dataPersonas, values)
-        if (filteredData.length === 0) {
-            setError('No se encontraron resultados para los filtros seleccionados')
-            setFilteredPersonas([])
-        } else {
-            setError(null)
-            setFilteredPersonas(filteredData)
-        }
     }
+  }, []);
 
     useEffect(() => {
         //simulacion primea consulta a la APi
@@ -109,16 +152,25 @@ const PersonaTab = () => {
 
     }, [])
     // Se aplica el filtro cada vez que un valor en el formulario cambia
-    useEffect(() => {
-        const values = form.getValues()
-        applyFilters(values)
-    }, [
-        form.watch("livingStatus"),
-        form.watch("houses"),
-        form.watch("department"),
-        form.watch("searchName"),
-        form.watch("isHeadOfFamily"),
-    ])
+   // Se aplica el filtro cada vez que un valor en el formulario cambia
+  const livingStatus = form.watch("livingStatus");
+  const houses = form.watch("houses");
+  const department = form.watch("department");
+  const searchName = form.watch("searchName");
+  const isHeadOfFamily = form.watch("isHeadOfFamily");
+
+  useEffect(() => {
+    const values = form.getValues();
+    applyFilters(values);
+  }, [
+    livingStatus,
+    houses,
+    department,
+    searchName,
+    isHeadOfFamily,
+    form,
+    applyFilters,
+  ]);
 
     return (
         <div className="container mx-auto py-8">
@@ -227,4 +279,5 @@ const PersonaTab = () => {
     )
 }
 
-export default PersonaTab
+
+export default PersonaTab;

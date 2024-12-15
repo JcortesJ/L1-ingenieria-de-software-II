@@ -1,4 +1,5 @@
-'use client'
+"use client";
+
 
 import {  useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
@@ -60,10 +61,26 @@ const MunicipioTab = () => {
         console.log("PErsonas en tab ", personas)
     }, [])
 
-    useEffect(() => {
-        const filtered = municipios.filter((municipio) =>
-            municipio.departamento.toLowerCase().startsWith(departamentoFilter.toLowerCase())
-        )
+
+  useEffect(() => {
+    const filtered = municipios.filter((municipio) =>
+      municipio.departamento
+        .toLowerCase()
+        .startsWith(departamentoFilter.toLowerCase())
+    );
+
+    // Si no hay resultados, establecer el error, sino, resetear el error
+    if (filtered.length === 0 && departamentoFilter !== "") {
+      setError(
+        "No se encontraron municipios que coincidan con el filtro de departamento."
+      );
+    } else {
+      setError(null); // Restablecer el error si hay resultados
+    }
+
+    setFilteredMunicipios(filtered); // Actualiza los municipios filtrados
+  }, [departamentoFilter, municipios]);
+
 
         if (filtered.length === 0 && departamentoFilter !== "") {
             setError("No se encontraron municipios que coincidan con el filtro de departamento.")
@@ -159,9 +176,14 @@ const MunicipioTab = () => {
                 personas={personas}
             />
             }
+
         </div>
-    )
-}
+      ) : null}
+    </div>
+  );
+};
+
 
 export default MunicipioTab
+
 
