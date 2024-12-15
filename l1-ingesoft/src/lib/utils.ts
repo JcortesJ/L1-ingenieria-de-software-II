@@ -23,7 +23,7 @@ export function getInputData(entityName: string) {
         type: "date",
         placeholder: "Ingrese la fecha de nacimiento",
         id: "fechaNacimiento",
-        defaultValue: new Date().toISOString().split("T")[0],
+        defaultValue: "",
         required: true,
       },
       {
@@ -75,7 +75,7 @@ export function getInputData(entityName: string) {
         type: "date",
         placeholder: "Ingrese la fecha de inicio de la ocupación",
         id: "fechaInicioOcupacion",
-        defaultValue: new Date().toISOString().split("T")[0],
+        defaultValue: "",
         required: true,
         dependsFrom: {
           field: "esCabezaFamilia",
@@ -87,7 +87,7 @@ export function getInputData(entityName: string) {
         type: "date",
         placeholder: "Ingrese la fecha de fin de la ocupación",
         id: "fechaFinOcupacion",
-        defaultValue: new Date().toISOString().split("T")[0],
+        defaultValue: "",
         required: true,
         dependsFrom: {
           field: "esCabezaFamilia",
