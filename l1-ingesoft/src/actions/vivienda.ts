@@ -34,3 +34,25 @@ export const fetchViviendas = async () => {
       return { data: null, error: "No se pudo cargar los datos de viviendas." };
     }
   };
+
+  interface UpdateViviendaData {
+    direccion: string;
+  }
+  
+  export const updateDireccionVivienda = async (id: number, data: UpdateViviendaData) => {
+    const response = await fetch(`/api/vivienda/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+  
+    if (!response.ok) {
+      throw new Error('Failed to update vivienda');
+    }
+  
+    return response.json();
+  };
+  
+  
