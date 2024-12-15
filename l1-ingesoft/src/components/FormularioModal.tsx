@@ -131,11 +131,7 @@ export function FormularioModal({
                         ? formValues[input.id]
                         : undefined
                     }
-                    value={
-                      input.type !== "checkbox"
-                        ? formValues[input.id] || ""
-                        : undefined
-                    }
+                    value={input.defaultValue}
                     onChange={(e) =>
                       handleInputChange(
                         input.id,

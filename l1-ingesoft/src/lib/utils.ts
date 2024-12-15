@@ -90,8 +90,8 @@ export function getInputData(entityName: string) {
         defaultValue: new Date().toISOString().split("T")[0],
         required: true,
         dependsFrom: {
-          field: "esVigente",
-          value: false,
+          field: "esCabezaFamilia",
+          value: true,
         },
       },
       {
