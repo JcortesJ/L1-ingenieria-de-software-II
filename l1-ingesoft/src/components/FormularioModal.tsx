@@ -3,7 +3,7 @@
 
 import { Button } from "./ui/button";
 import { Modal, ModalContent, ModalTrigger } from "./ui/modal";
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Alert, AlertDescription } from "./ui/alert";
 
 interface FormularioModalProps {
@@ -33,16 +33,22 @@ export function FormularioModal({
   inputs,
 }: FormularioModalProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [formValues, setFormValues] = useState<Record<string, any>>(() => {
-    // Inicializar con valores por defecto
-    const initialValues: Record<string, any> = {};
-    inputs.forEach((input) => {
-      initialValues[input.id] = input.defaultValue;
-    });
-    return initialValues;
-  });
 
+  const initialValues = useMemo(() => {
+    const values: Record<string, any> = {};
+    inputs.forEach((input) => {
+      values[input.id] = input.defaultValue;
+    });
+    return values;
+  }, [inputs]);
+
+  const [formValues, setFormValues] =
+    useState<Record<string, any>>(initialValues);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setFormValues(initialValues);
+  }, [initialValues, isOpen]);
 
   const handleInputChange = (id: string, value: any) => {
     setFormValues((prev) => ({
@@ -127,7 +133,7 @@ export function FormularioModal({
                         ? formValues[input.id]
                         : undefined
                     }
-                    value={input.defaultValue}
+                    value={formValues[input.id]}
                     onChange={(e) =>
                       handleInputChange(
                         input.id,
@@ -139,6 +145,11 @@ export function FormularioModal({
                   />
                 </div>
               ) : null
+            )}
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
             )}
             <section className="flex flex-row gap-10 justify-end">
               <Button
@@ -158,18 +169,13 @@ export function FormularioModal({
                 variant="destructive"
                 onClick={(e) => {
                   e.preventDefault();
-                  setFormValues({});
+                  setFormValues(initialValues);
                 }}
               >
                 Borrar
               </Button>
             </section>
           </form>
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
         </div>
       </ModalContent>
     </Modal>
