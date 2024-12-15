@@ -98,14 +98,14 @@ const ViviendaTab = () => {
           <FormularioModal
             className="w-full md:w-[180px] bg-gray-200"
             title="Agregar Vivienda"
-            name="vivienda"
+            name="Agregar Vivienda"
             inputs={getInputData("vivienda")}
             onSubmit={handleSubmit}
           />
           <FormularioModal
             className="w-full md:w-[180px] bg-destructive border-none hover:bg-destructive/90 hover:text-white"
             title="Eliminar Vivienda"
-            name="delete"
+            name="Eliminar Vivienda"
             inputs={getInputData("delete")}
             onSubmit={handleSubmit}
           />
