@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Persona {
+  id               Int        @id @default(autoincrement())
+  fecha_nacimiento DateTime
+  nombre           String     @db.VarChar(100)
+  genero           Genero?
+  cdf              Cdf?       @relation("CdfToPersonas", fields: [id_cdf], references: [id])
+  id_cdf           Int?
+  CdfAsociado      Cdf?       @relation("CdfToPersona")
+  gobernante       Municipio?
+  viviendas        Vivienda[] @relation("PersonaPosee")
+  Posee            Posee[]
+}
+
+model Cdf {
+  id         Int                    @id @default(autoincrement())
+  persona    Persona                @relation("CdfToPersona", fields: [id_persona], references: [id])
+  id_persona Int                    @unique
+  registro   Registro_residencial[]
+  personas   Persona[]              @relation("CdfToPersonas")
+}
+
+model Vivienda {
+  id           Int                    @id @default(autoincrement())
+  direccion    String                 @db.VarChar(200)
+  tipo         String                 @db.VarChar(200)
+  personaPosee Persona[]              @relation("PersonaPosee")
+  registro     Registro_residencial[]
+  municipio    Municipio              @relation(fields: [id_municipio], references: [id])
+  id_municipio Int
+  Posee        Posee[]
+}
+
+model Posee {
+  persona     Persona  @relation(fields: [id_persona], references: [id])
+  id_persona  Int
+  vivienda    Vivienda @relation(fields: [id_vivienda], references: [id])
+  id_vivienda Int
+
+  @@id([id_persona, id_vivienda])
+}
+
+model Municipio {
+  id              Int          @id @default(autoincrement())
+  nombre          String       @db.VarChar(200)
+  viviendas       Vivienda[]
+  gobernante      Persona?     @relation(fields: [id_gobernante], references: [id])
+  id_gobernante   Int?         @unique
+  departamento    Departamento @relation(fields: [id_departamento], references: [id])
+  id_departamento Int
+}
+
+model Departamento {
+  id     Int    @id @default(autoincrement())
+  nombre String @db.VarChar(200)
+
+  municipio Municipio[]
+}
+
+model Registro_residencial {
+  id                  Int       @id @default(autoincrement())
+  modalidad_ocupacion String    @db.VarChar(200)
+  fecha_inicio        DateTime
+  fecha_fin           DateTime?
+  registro            Cdf       @relation(fields: [id_cdf], references: [id])
+  id_cdf              Int       
+  vivienda            Vivienda  @relation(fields: [id_vivienda], references: [id])
+  id_vivienda         Int       
+  es_vigente          Boolean
+}
+
+enum Genero {
+  MASCULINO
+  FEMENINO
+  NO_BINARIO
+}
