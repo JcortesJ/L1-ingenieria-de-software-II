@@ -1,15 +1,31 @@
+"use client";
 import DepartamentoTab from "@/components/DepartamentoTab";
 import MunicipioTab from "@/components/MunicipioTab";
 import PersonaTab from "@/components/PersonaTab";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ViviendaTab from "@/components/ViviendaTab";
+import { useRouter } from "next/navigation";
 
 const queryPage = () => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const router = useRouter();
   return (
     <div className="w-full h-full p-16">
-      <h1 className="text-3xl font-bold mb-4 ">
-        Realice las consultas y observe su resultado
-      </h1>
+      <div className="w-full flex justify-between items-center">
+        <h1 className="text-3xl font-bold mb-4 ">
+          Realice las consultas y observe su resultado
+        </h1>
+        <Button
+          variant={"link"}
+          className="text-xl"
+          onClick={() => {
+            router.push("/");
+          }}
+        >
+          Regresar al inicio
+        </Button>
+      </div>
       <Tabs defaultValue="Personas" className="w-full ">
         <TabsList className="w-full flex bg-[#546057] text-white ">
           <TabsTrigger

@@ -12,7 +12,8 @@ import viviendasData, { ViviendaType } from "@/testdata/dataViviendas";
 import ViviendaCard from "./ViviendaCard";
 //import { fetchViviendas } from '@/actions/vivienda'
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"; // Importa el componente de alerta
-
+import { FormularioModal } from "./FormularioModal";
+import { getInputData } from "@/lib/utils";
 const ViviendaTab = () => {
   const [viviendas, setViviendas] = useState<ViviendaType[]>([]);
   const [filtro, setFiltro] = useState<"todos" | "vigentes" | "no-vigentes">(
@@ -61,10 +62,15 @@ const ViviendaTab = () => {
   const alertTitle = error ? "Error al cargar las viviendas" : "Sin resultados";
   const alertVariant = error ? "destructive" : "default"; // Rojo para error, amarillo para sin resultados
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleSubmit(data: Record<string, any>): void {
+    console.log(data);
+  }
+
   return (
     <div className="container mx-auto py-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
+      <div className="flex items-start justify-between mb-6 flex-col ">
+        <div className="w-full md:w-1/2">
           <h1 className="text-2xl font-bold">Viviendas</h1>
           <p className="text-sm text-gray-600">
             Historial de viviendas que han sido utilizadas, con la cabeza de
@@ -74,20 +80,36 @@ const ViviendaTab = () => {
           </p>
         </div>
 
-        <Select
-          onValueChange={(value: "todos" | "vigentes" | "no-vigentes") =>
-            setFiltro(value)
-          }
-        >
-          <SelectTrigger className="w-[180px] bg-gray-200">
-            <SelectValue placeholder="Filtrar por vigencia" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="todos">Todos</SelectItem>
-            <SelectItem value="vigentes">Vigentes</SelectItem>
-            <SelectItem value="no-vigentes">No vigentes</SelectItem>
-          </SelectContent>
-        </Select>
+        <section className="mt-5 flex flex-col md:flex-row items-start gap-2 w-full md:w-auto">
+          <Select
+            onValueChange={(value: "todos" | "vigentes" | "no-vigentes") =>
+              setFiltro(value)
+            }
+          >
+            <SelectTrigger className="w-full md:w-[180px] bg-gray-200">
+              <SelectValue placeholder="Filtrar por vigencia" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos</SelectItem>
+              <SelectItem value="vigentes">Vigentes</SelectItem>
+              <SelectItem value="no-vigentes">No vigentes</SelectItem>
+            </SelectContent>
+          </Select>
+          <FormularioModal
+            className="w-full md:w-[180px] bg-gray-200"
+            title="Agregar Vivienda"
+            name="vivienda"
+            inputs={getInputData("vivienda")}
+            onSubmit={handleSubmit}
+          />
+          <FormularioModal
+            className="w-full md:w-[180px] bg-destructive border-none hover:bg-destructive/90 hover:text-white"
+            title="Eliminar Vivienda"
+            name="delete"
+            inputs={getInputData("delete")}
+            onSubmit={handleSubmit}
+          />
+        </section>
       </div>
 
       {/* Muestra la alerta si hay un error o si no hay viviendas disponibles */}

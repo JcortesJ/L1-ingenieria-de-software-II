@@ -26,6 +26,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import dataPersonas, { PersonaType } from "@/testdata/dataPersona";
+import { FormularioModal } from "./FormularioModal";
+import { getInputData } from "@/lib/utils";
 //import { fetchPersonas } from "@/actions/personas";
 
 const formSchema = z.object({
@@ -147,6 +149,11 @@ const PersonaTab = () => {
     applyFilters,
   ]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleSubmit(data: Record<string, any>): void {
+    console.log(data);
+  }
+
   return (
     <div className="container mx-auto py-8">
       <Form {...form}>
@@ -236,23 +243,32 @@ const PersonaTab = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="isHeadOfFamily"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center gap-2">
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormLabel className="font-bold p-0 m-0">
-                    Solo Cabezas de Familia
-                  </FormLabel>
-                </FormItem>
-              )}
-            />
+            <section className="flex flex-col md:flex-row items-start gap-5 w-full md:w-auto col-span-full">
+              <FormField
+                control={form.control}
+                name="isHeadOfFamily"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center gap-2 w-full md:w-auto">
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel className="font-bold p-0 m-0">
+                      Solo Cabezas de Familia
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+              <FormularioModal
+                className="w-full md:w-[180px] bg-[#658567] border-none hover:bg-[#658567]/90 hover:text-white"
+                name="Crear Persona"
+                title="Por favor ingrese los datos de la persona"
+                inputs={getInputData("person")}
+                onSubmit={handleSubmit}
+              />
+            </section>
           </div>
         </form>
       </Form>
