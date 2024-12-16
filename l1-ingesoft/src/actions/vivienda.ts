@@ -52,7 +52,7 @@ export const createVivienda = async (data: Record<string, any>) => {
   }
   
   export const updateDireccionVivienda = async (id: number, data: UpdateViviendaData) => {
-    const response = await fetch(`/api/vivienda/${id}`, {
+    const response = await fetch(`/api/viviendas/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

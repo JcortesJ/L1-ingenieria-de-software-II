@@ -1,17 +1,15 @@
 "use client";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { createVivienda, fetchViviendas } from "@/actions/vivienda";
-
-import { useState, useEffect } from "react";
-
+import { useState, useEffect, useCallback } from "react";
 import { ViviendaType } from "@/testdata/dataViviendas";
 import ViviendaCard from "./ViviendaCard";
-//import { fetchViviendas } from '@/actions/vivienda'
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"; // Importa el componente de alerta
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { FormularioModal } from "./FormularioModal";
 import { getInputData } from "@/lib/utils";
 import { Input } from "./ui/input";
+
+
 const ViviendaTab = () => {
   const [viviendas, setViviendas] = useState<ViviendaType[]>([]);
   const [filteredViviendas, setFilteredViviendas] = useState<ViviendaType[]>([]);
@@ -19,56 +17,51 @@ const ViviendaTab = () => {
   const [loading, setLoading] = useState(true);
   const [nombreFilter, setNombreFilter] = useState("");
 
-
-
   useEffect(() => {
-    // Simulación de consulta a la API
     const loadData = async () => {
-      setLoading(true); // Establecer el estado de carga en verdadero
-      const { data, error } = await fetchViviendas(); // Llama a la función fetch
+      setLoading(true);
+      const { data, error } = await fetchViviendas();
 
       if (error) {
-        setError(error); // Si hay un error, actualiza el estado de error
+        setError(error);
       } else {
-        setError(null) // Restablecer el error si no hay error
-        setViviendas(data); // Si no hay error, actualiza el estado con los datos
-        setFilteredViviendas(data); // Si no hay error, actualiza el estado con los datos
+        setError(null)
+        setViviendas(data);
+        setFilteredViviendas(data);
       }
-      setLoading(false); // Establecer el estado de carga en falso
+      setLoading(false);
     };
-   
+
     loadData()
-
   }, []);
-
-  useEffect(() => {
+  const filters =()=>{
     if (!loading) {
-      // Filtrar viviendas por nombre
       const filtered = viviendas.filter((vivienda) =>
         vivienda.direccion.toLowerCase().startsWith(nombreFilter.toLowerCase())
       );
 
-      // Si no hay resultados, establecer el error, sino, resetear el error
       if (filtered.length === 0 && nombreFilter !== "") {
         setError(
           "No se encontraron viviendas que coincidan con el filtro aplicado."
         );
       } else {
-        setError(null); // Restablecer el error si hay resultados
+        setError(null);
       }
 
-      setFilteredViviendas(filtered); // Actualiza las viviendas filtradas
+      setFilteredViviendas(filtered);
     }
-  },[nombreFilter]);
-  // Condición para mostrar alerta: Si hay error o no hay viviendas disponibles
-  const showErrorAlert = error || viviendas.length === 0;
+  }
 
-  // Determina el mensaje y el tipo de alerta dependiendo del error o la cantidad de viviendas
+  useEffect(() => {
+    filters()
+  }, [nombreFilter, viviendas, loading]);
+
+  const showErrorAlert = error || viviendas.length === 0;
   const alertMessage = error
     ? "Hubo un problema al obtener los datos."
     : "No se encontraron viviendas con ese filtro.";
   const alertTitle = error ? "Error al cargar las viviendas" : "Sin resultados";
-  const alertVariant = error ? "destructive" : "default"; // Rojo para error, amarillo para sin resultados
+  const alertVariant = error ? "destructive" : "default";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function handleSubmit(dataVivienda: any): Promise<void> {
@@ -84,6 +77,14 @@ const ViviendaTab = () => {
       setError(error);
     }
   }
+
+  const updateViviendaInList = useCallback((updatedVivienda: ViviendaType) => {
+    setViviendas(prevViviendas =>
+      prevViviendas.map(v => v.id_vivienda === updatedVivienda.id_vivienda ? updatedVivienda : v)
+    );
+    filters()
+
+  }, []);
 
   return (
     <div className="container mx-auto py-8">
@@ -104,7 +105,6 @@ const ViviendaTab = () => {
             placeholder="Buscar por nombre"
             value={nombreFilter}
             onChange={(e) => setNombreFilter(e.target.value)}
-
           />
           <FormularioModal
             className="w-full md:w-[180px] bg-gray-200"
@@ -123,7 +123,6 @@ const ViviendaTab = () => {
         </section>
       </div>
 
-      {/* Muestra la alerta si hay un error o si no hay viviendas disponibles */}
       {showErrorAlert && (
         <Alert variant={alertVariant ?? null}>
           <AlertTitle>{alertTitle}</AlertTitle>
@@ -133,7 +132,11 @@ const ViviendaTab = () => {
 
       <div className="flex flex-row flex-wrap gap-2">
         {filteredViviendas.map((vivienda) => (
-          <ViviendaCard key={vivienda.id_vivienda} vivienda={vivienda} />
+          <ViviendaCard
+            key={vivienda.id_vivienda}
+            vivienda={vivienda}
+            onUpdate={updateViviendaInList}
+          />
         ))}
       </div>
     </div>
@@ -141,3 +144,4 @@ const ViviendaTab = () => {
 };
 
 export default ViviendaTab;
+
