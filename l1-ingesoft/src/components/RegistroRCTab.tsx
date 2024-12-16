@@ -4,13 +4,17 @@ import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import {
-  dataRegistroResidencial,
-  RegistroResidencialType,
-} from "@/testdata/dataRegistroR";
+import { RegistroResidencialType } from "@/testdata/dataRegistroR";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { fetchRegistroResidencial } from "@/actions/registroresidencial";
 import RegistroCard from "./RegistroCard";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 const RegistroRCTab = () => {
   const [registroresidencial, setRegistroResidencial] = useState<
@@ -19,48 +23,68 @@ const RegistroRCTab = () => {
   const [filteredRegistroResidencial, setFilteredRegistroResidencial] =
     useState<RegistroResidencialType[]>([]);
   const [nombreFilter, setNombreFilter] = useState("");
+  const [filtroVigente, setFiltroVigente] = useState<
+    "todos" | "vigentes" | "no-vigentes"
+  >("todos");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulación de consulta a la API
+    const loadData = async () => {
+      setLoading(true);
+      const { data, error } = await fetchRegistroResidencial();
+      if (error) {
+        setError(error);
+      } else {
+        setError(null);
+        setRegistroResidencial(data);
+        setFilteredRegistroResidencial(data);
+      }
+      setLoading(false);
+    };
 
-    // const loadData = async () => {
-    //     const { data, error } = await fetchDepartamentos(); // Llama a la función fetch
-
-    //     if (error) {
-    //       setError(error); // Si hay un error, actualiza el estado de error
-    //     } else {
-    //       setError(null) // Restablecer el error si no hay error
-    //       setDepartamentos(data);
-    //       setFilteredDepartamentos(data) // Si no hay error, actualiza el estado con los datos
-    //     }
-    //   };
-
-    //loadData()
-    setRegistroResidencial(dataRegistroResidencial);
-    setFilteredRegistroResidencial(dataRegistroResidencial);
+    loadData();
   }, []);
 
   useEffect(() => {
-    // Filtrar departamentos por nombre
-    const filtered = registroresidencial.filter((registroresidencial) =>
-      registroresidencial.id_registro
-        .toString()
-        .toLowerCase()
-        .startsWith(nombreFilter.toLowerCase())
-    );
-
-    // Si no hay resultados, establecer el error, sino, resetear el error
-    if (filtered.length === 0 && nombreFilter !== "") {
-      setError(
-        "No se encontraron registros residenciales que coincidan con el filtro aplicado."
+    if (!loading) {
+      const filtered = registroresidencial.filter((registro) =>
+        registro.id_registro
+          .toString()
+          .toLowerCase()
+          .startsWith(nombreFilter.toLowerCase())
       );
-    } else {
-      setError(null); // Restablecer el error si hay resultados
-    }
 
-    setFilteredRegistroResidencial(filtered); // Actualiza los departamentos filtrados
+      if (filtered.length === 0 && nombreFilter !== "") {
+        setError(
+          "No se encontraron registros residenciales que coincidan con el filtro aplicado."
+        );
+      } else {
+        setError(null);
+      }
+
+      setFilteredRegistroResidencial(filtered);
+    }
   }, [nombreFilter, registroresidencial]);
+
+  useEffect(() => {
+    if (!loading) {
+      switch (filtroVigente) {
+        case "vigentes":
+          setFilteredRegistroResidencial(
+            registroresidencial.filter((v) => v.esVigente)
+          );
+          break;
+        case "no-vigentes":
+          setFilteredRegistroResidencial(
+            registroresidencial.filter((v) => !v.esVigente)
+          );
+          break;
+        default:
+          setFilteredRegistroResidencial(registroresidencial);
+      }
+    }
+  }, [filtroVigente, registroresidencial]);
 
   return (
     <div className="container mx-auto py-8">
@@ -72,7 +96,8 @@ const RegistroRCTab = () => {
           </p>
         </div>
       </div>
-      <div className="mb-4">
+
+      <div className="mb-4 flex flex-row gap-2">
         <Input
           type="text"
           placeholder="Filtrar por identificador del registro residencial"
@@ -80,6 +105,20 @@ const RegistroRCTab = () => {
           onChange={(e) => setNombreFilter(e.target.value)}
           className="max-w-sm bg-gray-200"
         />
+        <Select
+          onValueChange={(value: "todos" | "vigentes" | "no-vigentes") =>
+            setFiltroVigente(value)
+          }
+        >
+          <SelectTrigger className="w-full md:w-[180px] bg-gray-200">
+            <SelectValue placeholder="Filtrar por vigencia" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos</SelectItem>
+            <SelectItem value="vigentes">Vigentes</SelectItem>
+            <SelectItem value="no-vigentes">No vigentes</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Mostrar alerta si hay un error */}
@@ -90,17 +129,16 @@ const RegistroRCTab = () => {
         </Alert>
       )}
 
-      {/* Mostrar departamentos filtrados si no hay error */}
-      {filteredRegistroResidencial.length > 0 && !error ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filteredRegistroResidencial.map((registroresidencial) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {/* Mostrar registros filtrados si no hay error */}
+        {!error &&
+          filteredRegistroResidencial.map((registro) => (
             <RegistroCard
-              key={registroresidencial.id_registro}
-              registro={registroresidencial}
+              key={registro.id_registro}
+              registro={registro}
             />
           ))}
-        </div>
-      ) : null}
+      </div>
     </div>
   );
 };

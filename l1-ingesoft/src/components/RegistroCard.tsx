@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Map } from "lucide-react";
 import { RegistroResidencialType } from "@/testdata/dataRegistroR";
+import { formatearFecha } from "@/lib/utils";
 
 interface RegistroCardProps {
   registro: RegistroResidencialType;
@@ -13,6 +14,12 @@ const RegistroCard = ({ registro }: RegistroCardProps) => {
         <CardTitle className="flex items-center gap-2">
           <Map className="h-5 w-5 text-green-500" />
           {registro.id_registro}
+          {registro.esVigente ? (
+              <div className="w-5 h-5 rounded-full bg-green-500" />
+            ) : (
+              <div className="w-5 h-5 rounded-full bg-red-500" />
+            )}
+
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -22,21 +29,25 @@ const RegistroCard = ({ registro }: RegistroCardProps) => {
               <strong>ID Registro:</strong> {registro.id_registro}
             </span>
             <span className="font-medium">
-              <strong>ID CDF:</strong> {registro.idCdf}
+              <strong>ID CDF:</strong> {registro.id_cabeza_hogar}
             </span>
             <span className="font-medium">
-              <strong>ID Vivienda:</strong> {registro.idVivienda}
+              <strong>ID Vivienda:</strong> {registro.id_vivienda}
+            </span>
+            <span className="font-medium">
+              <strong>Direccion:</strong> {registro.direccion}
             </span>
             <span className="font-medium">
               <strong>Modalidad Ocupacion:</strong>{" "}
-              {registro.modalidadOcupacion}
+              {registro.tipo}
             </span>
             <span className="font-medium">
-              <strong>Fecha Inicio:</strong> {registro.fechaInicio}
+              <strong>Fecha Inicio:</strong> {formatearFecha(registro.fecha_inicio) }
             </span>
             <span className="font-medium">
-              <strong>Fecha Fin:</strong> {registro.fechaFin}
+              <strong>Fecha Fin:</strong> {formatearFecha(registro.fecha_fin) }
             </span>
+            
           </p>
         </div>
       </CardContent>

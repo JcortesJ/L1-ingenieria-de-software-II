@@ -1,6 +1,6 @@
 export const fetchRegistroResidencial = async () => {
   try {
-    const response = await fetch("/api/registro", {
+    const response = await fetch("/api/viviendas", { // provisional
       method: "GET",
     });
 

@@ -4,57 +4,62 @@
 import { createVivienda, fetchViviendas } from "@/actions/vivienda";
 
 import { useState, useEffect } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import viviendasData, { ViviendaType } from "@/testdata/dataViviendas";
+
+import { ViviendaType } from "@/testdata/dataViviendas";
 import ViviendaCard from "./ViviendaCard";
 //import { fetchViviendas } from '@/actions/vivienda'
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"; // Importa el componente de alerta
 import { FormularioModal } from "./FormularioModal";
 import { getInputData } from "@/lib/utils";
+import { Input } from "./ui/input";
 const ViviendaTab = () => {
   const [viviendas, setViviendas] = useState<ViviendaType[]>([]);
-  const [filtro, setFiltro] = useState<"todos" | "vigentes" | "no-vigentes">(
-    "todos"
-  );
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [filteredViviendas, setFilteredViviendas] = useState<ViviendaType[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [nombreFilter, setNombreFilter] = useState("");
 
-  useEffect(() => {
-    switch (filtro) {
-      case "vigentes":
-        setViviendas(viviendasData.filter((v) => v.esVigente));
-        break;
-      case "no-vigentes":
-        setViviendas(viviendasData.filter((v) => !v.esVigente));
-        break;
-      default:
-        setViviendas(viviendasData);
-    }
-  }, [filtro]);
+
 
   useEffect(() => {
     // Simulación de consulta a la API
-    // const loadData = async () => {
-    //     const { data, error } = await fetchViviendas(); // Llama a la función fetch
+    const loadData = async () => {
+      setLoading(true); // Establecer el estado de carga en verdadero
+      const { data, error } = await fetchViviendas(); // Llama a la función fetch
 
-    //     if (error) {
-    //       setError(error); // Si hay un error, actualiza el estado de error
-    //     } else {
-    //       setError(null) // Restablecer el error si no hay error
-    //       setViviendas(data); // Si no hay error, actualiza el estado con los datos
-    //     }
-    //   };
+      if (error) {
+        setError(error); // Si hay un error, actualiza el estado de error
+      } else {
+        setError(null) // Restablecer el error si no hay error
+        setViviendas(data); // Si no hay error, actualiza el estado con los datos
+        setFilteredViviendas(data); // Si no hay error, actualiza el estado con los datos
+      }
+      setLoading(false); // Establecer el estado de carga en falso
+    };
+   
+    loadData()
 
-    // loadData()
-    setViviendas(viviendasData);
   }, []);
 
+  useEffect(() => {
+    if (!loading) {
+      // Filtrar viviendas por nombre
+      const filtered = viviendas.filter((vivienda) =>
+        vivienda.direccion.toLowerCase().startsWith(nombreFilter.toLowerCase())
+      );
+
+      // Si no hay resultados, establecer el error, sino, resetear el error
+      if (filtered.length === 0 && nombreFilter !== "") {
+        setError(
+          "No se encontraron viviendas que coincidan con el filtro aplicado."
+        );
+      } else {
+        setError(null); // Restablecer el error si hay resultados
+      }
+
+      setFilteredViviendas(filtered); // Actualiza las viviendas filtradas
+    }
+  },[nombreFilter]);
   // Condición para mostrar alerta: Si hay error o no hay viviendas disponibles
   const showErrorAlert = error || viviendas.length === 0;
 
@@ -94,20 +99,13 @@ const ViviendaTab = () => {
         </div>
 
         <section className="mt-5 flex flex-col md:flex-row items-start gap-2 w-full md:w-auto">
-          <Select
-            onValueChange={(value: "todos" | "vigentes" | "no-vigentes") =>
-              setFiltro(value)
-            }
-          >
-            <SelectTrigger className="w-full md:w-[180px] bg-gray-200">
-              <SelectValue placeholder="Filtrar por vigencia" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos</SelectItem>
-              <SelectItem value="vigentes">Vigentes</SelectItem>
-              <SelectItem value="no-vigentes">No vigentes</SelectItem>
-            </SelectContent>
-          </Select>
+          <Input
+            className="bg-gray-200"
+            placeholder="Buscar por nombre"
+            value={nombreFilter}
+            onChange={(e) => setNombreFilter(e.target.value)}
+
+          />
           <FormularioModal
             className="w-full md:w-[180px] bg-gray-200"
             title="Agregar Vivienda"
@@ -134,7 +132,7 @@ const ViviendaTab = () => {
       )}
 
       <div className="flex flex-row flex-wrap gap-2">
-        {viviendas.map((vivienda) => (
+        {filteredViviendas.map((vivienda) => (
           <ViviendaCard key={vivienda.id_vivienda} vivienda={vivienda} />
         ))}
       </div>
