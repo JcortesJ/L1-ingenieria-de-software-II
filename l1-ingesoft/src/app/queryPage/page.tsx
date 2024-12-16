@@ -36,13 +36,13 @@ const queryPage = () => {
           >
             Personas
           </TabsTrigger>
-          <TabsTrigger className="flex-1" value="Viviendas">
+          <TabsTrigger className="flex-1 data-[state=active]:bg-[#C1C8C1]" value="Viviendas">
             Viviendas
           </TabsTrigger>
-          <TabsTrigger className="flex-1" value="Municipios">
+          <TabsTrigger className="flex-1 data-[state=active]:bg-[#C1C8C1]" value="Municipios">
             Municipios
           </TabsTrigger>
-          <TabsTrigger className="flex-1" value="Departamentos">
+          <TabsTrigger className="flex-1 data-[state=active]:bg-[#C1C8C1]" value="Departamentos">
             Departamentos
           </TabsTrigger>
           <TabsTrigger className="flex-1" value="Registro Residencial">

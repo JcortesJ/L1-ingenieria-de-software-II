@@ -1,10 +1,10 @@
 // Importa cualquier dependencia que necesites
 export const fetchPersonas = async () => {
   try {
-    const response = await fetch("/api/personas", {
+    const response = await fetch("/api/persona", {
       method: "GET", // Aquí especificamos que es un GET
     });
-
+    console.log(response)
     if (!response.ok) {
       throw new Error("Error al obtener los datos de la API");
     }
@@ -35,11 +35,11 @@ export const createPersona = async (data: Record<string, any>) => {
 
  interface UpdatePersonaData {
     nombre: string;
-    vivo: boolean;
+    genero: string;
   }
   
   export const updatePersona = async (id: number, data: UpdatePersonaData) => {
-    const response = await fetch(`/api/personas/${id}`, {
+    const response = await fetch(`/api/persona/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

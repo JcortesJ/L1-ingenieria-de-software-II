@@ -7,8 +7,8 @@ import { Alert, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from 'lucide-react'
 import { useToast } from "@/hooks/use-toast"
 import MunicipioCard from "./MunicipioCard"
-import dataMunicipios, { MunicipioType } from "@/testdata/dataMunicipios"
-import dataPersonas, { PersonaType } from "@/testdata/dataPersona"
+import  { MunicipioType } from "@/testdata/dataMunicipios"
+import  { PersonaType } from "@/testdata/dataPersona"
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { fetchMunicipios, cambiarAlcalde } from "@/actions/municipios"
 import { ModalCambiarAlcalde } from "./ModalCambiarAlcade"
@@ -23,62 +23,68 @@ const MunicipioTab = () => {
     const [personas, setPersonas] = useState<PersonaType[]>([])
     const [selectedMunicipio, setSelectedMunicipio] = useState<MunicipioType | null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const { toast } = useToast()
 
     useEffect(() => {
-        // const loadData = async () => {
-        //     try {
-        //         const { data: municipiosData, error: municipiosError } = await fetchMunicipios()
-        //         if (municipiosError) {
-        //             setError(municipiosError)
-        //         } else {
-        //             setMunicipios(municipiosData)
-        //             setFilteredMunicipios(municipiosData)
-        //         }
+        const loadData = async () => {
+            setIsLoading(true)
+            try {
+                const { data: municipiosData, error: municipiosError } = await fetchMunicipios()
+                if (municipiosError) {
+                    setError(municipiosError)
+                } else {
+                    setMunicipios(municipiosData)
+                    setFilteredMunicipios(municipiosData)
+                }
 
-        //         const { data: personasData, error: personasError } = await fetchPersonas()
-        //         if (personasError) {
-        //             console.error("Error fetching personas:", personasError)
-        //         } else {
-        //             setPersonas(personasData)
-        //         }
-        //     } catch (error) {
-        //         console.error("Error loading data:", error)
-        //         setError("Hubo un error al cargar los datos. Por favor, intente de nuevo más tarde.")
-        //     }
-        // }
+                const { data: personasData, error: personasError } = await fetchPersonas()
+                if (personasError) {
+                    console.error("Error fetching personas:", personasError)
+                } else {
+                    setPersonas(personasData)
+                }
+            } catch (error) {
+                console.error("Error loading data:", error)
+                setError("Hubo un error al cargar los datos. Por favor, intente de nuevo más tarde.")
+            }
+            setIsLoading(false)
+        }
 
-        // loadData()
-        setMunicipios(dataMunicipios)
-        setFilteredMunicipios(dataMunicipios)
+        loadData()
+        // setMunicipios(dataMunicipios)
+        // setFilteredMunicipios(dataMunicipios)
         
         
     }, [])
 
-    useEffect(() => {
-        setPersonas(dataPersonas)
-        console.log("PErsonas data ", dataPersonas)
-        console.log("PErsonas en tab ", personas)
-    }, [])
+    // useEffect(() => {
+    //     setPersonas(dataPersonas)
+    //     console.log("PErsonas data ", dataPersonas)
+    //     console.log("PErsonas en tab ", personas)
+    // }, [])
 
 
   useEffect(() => {
-    const filtered = municipios.filter((municipio) =>
-      municipio.departamento
-        .toLowerCase()
-        .startsWith(departamentoFilter.toLowerCase())
-    );
-
-    // Si no hay resultados, establecer el error, sino, resetear el error
-    if (filtered.length === 0 && departamentoFilter !== "") {
-      setError(
-        "No se encontraron municipios que coincidan con el filtro de departamento."
-      );
-    } else {
-      setError(null); // Restablecer el error si hay resultados
+    if (!isLoading){
+        const filtered = municipios.filter((municipio) =>
+            municipio.departamento
+              .toLowerCase()
+              .startsWith(departamentoFilter.toLowerCase())
+          );
+      
+          // Si no hay resultados, establecer el error, sino, resetear el error
+          if (filtered.length === 0 && departamentoFilter !== "") {
+            setError(
+              "No se encontraron municipios que coincidan con el filtro de departamento."
+            );
+          } else {
+            setError(null); // Restablecer el error si hay resultados
+          }
+      
+          setFilteredMunicipios(filtered); // Actualiza los municipios filtrados
     }
-
-    setFilteredMunicipios(filtered); // Actualiza los municipios filtrados
+   
   }, [departamentoFilter, municipios]);
 
 
@@ -91,36 +97,48 @@ const MunicipioTab = () => {
     }
 
     const handleCambiarAlcalde = async (nuevoAlcaldeId: number) => {
-        if (!selectedMunicipio) return
-
+        if (!selectedMunicipio) {
+            toast({
+                title: "Advertencia",
+                description: "Por favor, selecciona un municipio antes de continuar.",
+                variant: "destructive",
+                duration: 3000,
+            });
+            return;
+        }
+    
         try {
-            await cambiarAlcalde(selectedMunicipio.id_municipio, nuevoAlcaldeId)
-            const nuevoAlcalde = personas.find(p => p.id === nuevoAlcaldeId)
+            await cambiarAlcalde(selectedMunicipio.id_municipio, nuevoAlcaldeId);
+            const nuevoAlcalde = personas.find(p => p.id === nuevoAlcaldeId);
+    
             if (nuevoAlcalde) {
-                setMunicipios(prevMunicipios => 
-                    prevMunicipios.map(m => 
-                        m.id_municipio === selectedMunicipio.id_municipio 
-                            ? {...m, nombre_gobernador: nuevoAlcalde.nombre, id_gobernador: nuevoAlcalde.id}
+                setMunicipios(prevMunicipios =>
+                    prevMunicipios.map(m =>
+                        m.id_municipio === selectedMunicipio.id_municipio
+                            ? { ...m, nombre_gobernador: nuevoAlcalde.nombre, id_gobernador: nuevoAlcalde.id }
                             : m
                     )
-                )
+                );
+    
                 toast({
                     title: "Alcalde actualizado",
                     description: `El nuevo alcalde de ${selectedMunicipio.nombre} es ${nuevoAlcalde.nombre}`,
                     duration: 3000,
-                })
+                });
             }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
+            const errorMessage = (error instanceof Error) ? error.message : "Ocurrió un error inesperado";
             toast({
                 title: "Error",
-                description: "No se pudo actualizar el alcalde",
+                description: errorMessage,
                 variant: "destructive",
                 duration: 3000,
-            })
+            });
+        } finally {
+            setIsModalOpen(false);
         }
-        setIsModalOpen(false)
-    }
+    };
+    
 
     return (
         <div className="container mx-auto py-8">

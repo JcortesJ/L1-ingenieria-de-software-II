@@ -5,6 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const formatearFecha = (fecha:string) => {
+  const fechaObj = new Date(fecha); // Convierte la cadena en un objeto Date
+  return fechaObj.toLocaleDateString("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
+
 export function getInputData(entityName: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let data: any = [];
