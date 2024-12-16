@@ -1,13 +1,13 @@
 export interface RegistroResidencialType {
   id_registro: number;
-  id_cabeza_hogar: number;
+  id_cdf: number;
   nombre_cabeza_hogar: string;
   id_vivienda: number;
-  direccion:string;
-  tipo: string;
+  direccion_vivienda:string;
+  modalidad_ocupacion: string;
   fecha_inicio: string;
   fecha_fin: string; // Opcional, por defecto será null
-  esVigente?: boolean; // Opcional, por defecto será true
+  es_vigente: boolean; // Opcional, por defecto será true
 }
 
 // export const dataRegistroResidencial: RegistroResidencialType[] = [

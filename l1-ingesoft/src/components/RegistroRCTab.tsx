@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle } from 'lucide-react';
 import { RegistroResidencialType } from "@/testdata/dataRegistroR";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { fetchRegistroResidencial } from "@/actions/registroresidencial";
 import RegistroCard from "./RegistroCard";
 import {
@@ -17,15 +16,9 @@ import {
 } from "./ui/select";
 
 const RegistroRCTab = () => {
-  const [registroresidencial, setRegistroResidencial] = useState<
-    RegistroResidencialType[]
-  >([]);
-  const [filteredRegistroResidencial, setFilteredRegistroResidencial] =
-    useState<RegistroResidencialType[]>([]);
+  const [registroResidencial, setRegistroResidencial] = useState<RegistroResidencialType[]>([]);
   const [nombreFilter, setNombreFilter] = useState("");
-  const [filtroVigente, setFiltroVigente] = useState<
-    "todos" | "vigentes" | "no-vigentes"
-  >("todos");
+  const [filtroVigente, setFiltroVigente] = useState<"todos" | "vigentes" | "no-vigentes">("todos");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -38,7 +31,6 @@ const RegistroRCTab = () => {
       } else {
         setError(null);
         setRegistroResidencial(data);
-        setFilteredRegistroResidencial(data);
       }
       setLoading(false);
     };
@@ -46,45 +38,31 @@ const RegistroRCTab = () => {
     loadData();
   }, []);
 
-  useEffect(() => {
-    if (!loading) {
-      const filtered = registroresidencial.filter((registro) =>
-        registro.id_registro
-          .toString()
-          .toLowerCase()
-          .startsWith(nombreFilter.toLowerCase())
-      );
+  const filteredRegistroResidencial = useMemo(() => {
+    if (loading) return [];
 
-      if (filtered.length === 0 && nombreFilter !== "") {
-        setError(
-          "No se encontraron registros residenciales que coincidan con el filtro aplicado."
-        );
-      } else {
-        setError(null);
-      }
+    return registroResidencial.filter((registro) => {
+      const matchesNombre = registro.id_registro
+        .toString()
+        .toLowerCase()
+        .includes(nombreFilter.toLowerCase());
 
-      setFilteredRegistroResidencial(filtered);
-    }
-  }, [nombreFilter, registroresidencial]);
+      const matchesVigencia =
+        filtroVigente === "todos" ||
+        (filtroVigente === "vigentes" && registro.es_vigente) ||
+        (filtroVigente === "no-vigentes" && !registro.es_vigente);
+
+      return matchesNombre && matchesVigencia;
+    });
+  }, [registroResidencial, nombreFilter, filtroVigente, loading]);
 
   useEffect(() => {
-    if (!loading) {
-      switch (filtroVigente) {
-        case "vigentes":
-          setFilteredRegistroResidencial(
-            registroresidencial.filter((v) => v.esVigente)
-          );
-          break;
-        case "no-vigentes":
-          setFilteredRegistroResidencial(
-            registroresidencial.filter((v) => !v.esVigente)
-          );
-          break;
-        default:
-          setFilteredRegistroResidencial(registroresidencial);
-      }
+    if (!loading && filteredRegistroResidencial.length === 0 && (nombreFilter !== "" || filtroVigente !== "todos")) {
+      setError("No se encontraron registros residenciales que coincidan con los filtros aplicados.");
+    } else {
+      setError(null);
     }
-  }, [filtroVigente, registroresidencial]);
+  }, [filteredRegistroResidencial, nombreFilter, filtroVigente, loading]);
 
   return (
     <div className="container mx-auto py-8">
@@ -121,7 +99,6 @@ const RegistroRCTab = () => {
         </Select>
       </div>
 
-      {/* Mostrar alerta si hay un error */}
       {error && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
@@ -130,8 +107,7 @@ const RegistroRCTab = () => {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {/* Mostrar registros filtrados si no hay error */}
-        {!error &&
+        {!loading &&
           filteredRegistroResidencial.map((registro) => (
             <RegistroCard
               key={registro.id_registro}
@@ -144,3 +120,4 @@ const RegistroRCTab = () => {
 };
 
 export default RegistroRCTab;
+

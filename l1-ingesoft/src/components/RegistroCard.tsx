@@ -13,33 +13,38 @@ const RegistroCard = ({ registro }: RegistroCardProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Map className="h-5 w-5 text-green-500" />
-          {registro.id_registro}
-          {registro.esVigente ? (
-              <div className="w-5 h-5 rounded-full bg-green-500" />
-            ) : (
-              <div className="w-5 h-5 rounded-full bg-red-500" />
-            )}
+          {registro.direccion_vivienda }
+          
 
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
+          <div className="flex items-center gap-2">
+          {registro.es_vigente ? (
+              <div className="w-5 h-5 rounded-full bg-green-500" />
+            ) : (
+              <div className="w-5 h-5 rounded-full bg-red-500" />
+            )}
+            <span className="font-bold">Vigencia</span>
+          </div>
+          
           <p className="flex flex-col items-start gap-2">
             <span className="font-medium">
               <strong>ID Registro:</strong> {registro.id_registro}
             </span>
             <span className="font-medium">
-              <strong>ID CDF:</strong> {registro.id_cabeza_hogar}
+              <strong>ID CDF:</strong> {registro.id_cdf}
             </span>
             <span className="font-medium">
               <strong>ID Vivienda:</strong> {registro.id_vivienda}
             </span>
             <span className="font-medium">
-              <strong>Direccion:</strong> {registro.direccion}
+              <strong>Direccion:</strong> {registro.direccion_vivienda}
             </span>
             <span className="font-medium">
               <strong>Modalidad Ocupacion:</strong>{" "}
-              {registro.tipo}
+              {registro.modalidad_ocupacion}
             </span>
             <span className="font-medium">
               <strong>Fecha Inicio:</strong> {formatearFecha(registro.fecha_inicio) }
