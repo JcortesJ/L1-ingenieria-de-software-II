@@ -21,14 +21,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { fetchPersonas } from "@/actions/personas";
+import { createPersona, fetchPersonas } from "@/actions/personas";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, CircleUserRound } from "lucide-react";
 import { PersonaType } from "@/testdata/dataPersona";
 import { FormularioModal } from "./FormularioModal";
 import { getInputData } from "@/lib/utils";
 import { Switch } from "./ui/switch";
+import { AnimatedCard } from "./ui/AnimatedCard";
+import { Skeleton } from "./ui/skeleton";
 
 const formSchema = z.object({
   houses: z.enum(["all", "0", "1", "2", "3+"]),
@@ -99,7 +101,7 @@ const PersonaTab = () => {
       if (error) {
         setError(error);
       } else {
-        setError(null)
+        setError(null);
         setPersonas(data);
         console.log(personas);
       }
@@ -108,18 +110,21 @@ const PersonaTab = () => {
     loadData();
   }, []);
 
-  const applyFilters = useCallback((values: z.infer<typeof formSchema>) => {
-    if (!personas.length) return;
+  const applyFilters = useCallback(
+    (values: z.infer<typeof formSchema>) => {
+      if (!personas.length) return;
 
-    const filteredData = aplicarFiltros(personas, values);
-    if (filteredData.length === 0) {
-      setError("No se encontraron resultados para los filtros seleccionados");
-      setFilteredPersonas([]);
-    } else {
-      setError(null);
-      setFilteredPersonas(filteredData);
-    }
-  }, [personas]);
+      const filteredData = aplicarFiltros(personas, values);
+      if (filteredData.length === 0) {
+        setError("No se encontraron resultados para los filtros seleccionados");
+        setFilteredPersonas([]);
+      } else {
+        setError(null);
+        setFilteredPersonas(filteredData);
+      }
+    },
+    [personas]
+  );
 
   const houses = form.watch("houses");
   const department = form.watch("department");
@@ -138,27 +143,61 @@ const PersonaTab = () => {
     isHeadOfFamily,
     form,
     applyFilters,
-    isLoading
+    isLoading,
   ]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function handleSubmit(data: Record<string, any>): void {
-    console.log(data);
+  async function handleSubmit(dataSubmit: Record<string, any>): Promise<void> {
+    const {
+      esCabezaFamilia,
+      fechaFinOcupacion,
+      fechaInicioOcupacion,
+      fechaNacimiento,
+      genero,
+      idVivienda,
+      modalidadOcupacion,
+      nombre,
+    } = dataSubmit;
+    const personaData = {
+      fechaNacimiento: fechaNacimiento,
+      nombre: nombre,
+      isCdf: Boolean(esCabezaFamilia),
+      genero: genero.toUpperCase(),
+      ...(idVivienda && { idVivienda: idVivienda }),
+      ...(modalidadOcupacion && { modalidadOcupacion: modalidadOcupacion }),
+      ...(fechaInicioOcupacion && { fechaInicio: fechaInicioOcupacion }),
+      ...(fechaFinOcupacion && { fechaFin: fechaFinOcupacion }),
+    };
+
+    console.log(personaData);
+    const { data, error } = await createPersona(personaData);
+    if (error) {
+      setError(error);
+    } else {
+      setError(null);
+      console.log(data);
+      setPersonas((prevPersonas) => [...prevPersonas, personaData]);
+    }
   }
 
-  const updatePersonaInList = useCallback((updatedPersona: PersonaType) => {
-    setPersonas(prevPersonas =>
-      prevPersonas.map(p => p.id === updatedPersona.id ? updatedPersona : p)
-    );
-    applyFilters(form.getValues());
-  }, [applyFilters, form]);
+  const updatePersonaInList = useCallback(
+    (updatedPersona: PersonaType) => {
+      setPersonas((prevPersonas) =>
+        prevPersonas.map((p) =>
+          p.id === updatedPersona.id ? updatedPersona : p
+        )
+      );
+      applyFilters(form.getValues());
+    },
+    [applyFilters, form]
+  );
 
   return (
     <div className="container mx-auto py-8">
       <Form {...form}>
         <form className="space-y-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-          <FormField
+            <FormField
               control={form.control}
               name="searchName"
               render={({ field }) => (
@@ -218,7 +257,7 @@ const PersonaTab = () => {
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="isHeadOfFamily"
@@ -256,13 +295,34 @@ const PersonaTab = () => {
       )}
 
       <div className="flex flex-row flex-wrap gap-2">
-        {filteredPersonas.map((persona, index) => (
-          <PersonaCard persona={persona} key={index} onUpdate={updatePersonaInList} />
-        ))}
+        {isLoading
+          ? [...Array(3)].map((_, index) => (
+              <AnimatedCard key={index}>
+                <div className="flex flex-col items-center mb-4">
+                  <CircleUserRound className="w-10 h-10 stroke-primary mb-2" />
+                  <h2
+                    className="text-lg font-bold text-center truncate w-full"
+                    title={"persona"}
+                  >
+                    persona
+                  </h2>
+                </div>
+                <Skeleton className="h-10 w-100vw" />
+                <Skeleton className="h-10 w-100vw" />
+                <Skeleton className="h-10 w-100vw" />
+                <p>Cargando...</p>
+              </AnimatedCard>
+            ))
+          : filteredPersonas.map((persona, index) => (
+              <PersonaCard
+                persona={persona}
+                key={index}
+                onUpdate={updatePersonaInList}
+              />
+            ))}
       </div>
     </div>
   );
 };
 
 export default PersonaTab;
-
