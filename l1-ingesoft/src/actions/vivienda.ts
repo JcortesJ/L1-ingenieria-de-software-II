@@ -52,6 +52,7 @@ export const updateDireccionVivienda = async (
   return response.json();
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const deleteVivienda = async (data: Record<string, any>) => {
   const response = await fetch(`/api/viviendas/${data.idVivienda}`, {
     method: "DELETE",
