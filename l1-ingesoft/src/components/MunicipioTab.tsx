@@ -97,36 +97,48 @@ const MunicipioTab = () => {
     }
 
     const handleCambiarAlcalde = async (nuevoAlcaldeId: number) => {
-        if (!selectedMunicipio) return
-
+        if (!selectedMunicipio) {
+            toast({
+                title: "Advertencia",
+                description: "Por favor, selecciona un municipio antes de continuar.",
+                variant: "destructive",
+                duration: 3000,
+            });
+            return;
+        }
+    
         try {
-            await cambiarAlcalde(selectedMunicipio.id_municipio, nuevoAlcaldeId)
-            const nuevoAlcalde = personas.find(p => p.id === nuevoAlcaldeId)
+            await cambiarAlcalde(selectedMunicipio.id_municipio, nuevoAlcaldeId);
+            const nuevoAlcalde = personas.find(p => p.id === nuevoAlcaldeId);
+    
             if (nuevoAlcalde) {
-                setMunicipios(prevMunicipios => 
-                    prevMunicipios.map(m => 
-                        m.id_municipio === selectedMunicipio.id_municipio 
-                            ? {...m, nombre_gobernador: nuevoAlcalde.nombre, id_gobernador: nuevoAlcalde.id}
+                setMunicipios(prevMunicipios =>
+                    prevMunicipios.map(m =>
+                        m.id_municipio === selectedMunicipio.id_municipio
+                            ? { ...m, nombre_gobernador: nuevoAlcalde.nombre, id_gobernador: nuevoAlcalde.id }
                             : m
                     )
-                )
+                );
+    
                 toast({
                     title: "Alcalde actualizado",
                     description: `El nuevo alcalde de ${selectedMunicipio.nombre} es ${nuevoAlcalde.nombre}`,
                     duration: 3000,
-                })
+                });
             }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
+            const errorMessage = (error instanceof Error) ? error.message : "Ocurrió un error inesperado";
             toast({
                 title: "Error",
-                description: "No se pudo actualizar el alcalde",
+                description: errorMessage,
                 variant: "destructive",
                 duration: 3000,
-            })
+            });
+        } finally {
+            setIsModalOpen(false);
         }
-        setIsModalOpen(false)
-    }
+    };
+    
 
     return (
         <div className="container mx-auto py-8">
