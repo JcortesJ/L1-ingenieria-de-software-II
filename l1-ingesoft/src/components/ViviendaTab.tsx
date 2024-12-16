@@ -1,10 +1,7 @@
-
-'use client'
-
+"use client";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { fetchViviendas } from '@/actions/vivienda'
-
+import { createVivienda, fetchViviendas } from "@/actions/vivienda";
 
 import { useState, useEffect } from "react";
 import {
@@ -21,11 +18,12 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"; // 
 import { FormularioModal } from "./FormularioModal";
 import { getInputData } from "@/lib/utils";
 const ViviendaTab = () => {
-  const [viviendas, setViviendas] = useState<ViviendaType[]>([])
-  const [filtro, setFiltro] = useState<'todos' | 'vigentes' | 'no-vigentes'>('todos')
+  const [viviendas, setViviendas] = useState<ViviendaType[]>([]);
+  const [filtro, setFiltro] = useState<"todos" | "vigentes" | "no-vigentes">(
+    "todos"
+  );
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [error, setError] = useState<string | null>(null)
-
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     switch (filtro) {
@@ -68,8 +66,18 @@ const ViviendaTab = () => {
   const alertVariant = error ? "destructive" : "default"; // Rojo para error, amarillo para sin resultados
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function handleSubmit(data: Record<string, any>): void {
-    console.log(data);
+  async function handleSubmit(dataVivienda: any): Promise<void> {
+    const { direccion, tipoVivienda, idMunicipio, idPersona } = dataVivienda;
+    const viviendaData = {
+      direccion: direccion,
+      tipo: tipoVivienda,
+      idMunicipio: Number(idMunicipio),
+      idPersona: Number(idPersona),
+    };
+    const { error } = await createVivienda(viviendaData);
+    if (error) {
+      setError(error);
+    }
   }
 
   return (

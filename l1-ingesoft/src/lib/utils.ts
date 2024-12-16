@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const formatearFecha = (fecha:string) => {
+export const formatearFecha = (fecha: string) => {
   const fechaObj = new Date(fecha); // Convierte la cadena en un objeto Date
   return fechaObj.toLocaleDateString("es-ES", {
     day: "2-digit",
@@ -45,7 +45,7 @@ export function getInputData(entityName: string) {
         options: [
           { value: "masculino", label: "Masculino" },
           { value: "femenino", label: "Femenino" },
-          { value: "otro", label: "Otro" },
+          { value: "no_binario", label: "Otro" },
         ],
       },
       {
@@ -171,9 +171,7 @@ export function getInputData(entityName: string) {
         options: [
           { value: "casa", label: "Casa" },
           { value: "apartamento", label: "Apartamento" },
-          { value: "habitacion", label: "Habitación" },
-          { value: "local", label: "Local" },
-          { value: "otro", label: "Otro" },
+          { value: "conjunto", label: "Conjunto" },
         ],
       },
       {
@@ -189,6 +187,14 @@ export function getInputData(entityName: string) {
         type: "text",
         placeholder: "Ej: 1234567890",
         id: "idMunicipio",
+        defaultValue: "",
+        required: true,
+      },
+      {
+        label: "Ingrese el identificador de la persona",
+        type: "text",
+        placeholder: "Ej: 1234567890",
+        id: "idPersona",
         defaultValue: "",
         required: true,
       },
