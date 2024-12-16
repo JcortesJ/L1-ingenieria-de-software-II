@@ -163,7 +163,7 @@ const PersonaTab = () => {
       nombre: nombre,
       isCdf: Boolean(esCabezaFamilia),
       genero: genero.toUpperCase(),
-      ...(idVivienda && { idVivienda: idVivienda }),
+      ...(idVivienda && { idVivienda: Number(idVivienda) }),
       ...(modalidadOcupacion && { modalidadOcupacion: modalidadOcupacion }),
       ...(fechaInicioOcupacion && { fechaInicio: fechaInicioOcupacion }),
       ...(fechaFinOcupacion && { fechaFin: fechaFinOcupacion }),
