@@ -17,12 +17,12 @@ export const fetchMunicipios = async () => {
   };
 
   export const cambiarAlcalde = async (municipioId: number, nuevoAlcaldeId: number): Promise<void> => {
-    const response = await fetch('/api/cambiar-alcalde', {
-      method: 'POST',
+    const response = await fetch('/api/municipios/update-gobernador', {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ municipioId, nuevoAlcaldeId }),
+      body: JSON.stringify({ idPersona:nuevoAlcaldeId, idMunicipio:municipioId }),
     })
   
     if (!response.ok) {
