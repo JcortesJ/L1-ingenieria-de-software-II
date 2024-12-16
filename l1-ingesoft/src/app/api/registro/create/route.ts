@@ -12,10 +12,25 @@ export async function POST(request: NextRequest) {
             fechaFin
         } = await request.json();
 
+        const viviendaExiste = await prisma.vivienda.findFirst({
+            where: {
+                id: idVivienda,
+                existe: true
+            }
+        })
+
+        if (!viviendaExiste) {
+            return Response.json(
+                { message: 'Esta vivienda no existe' },
+                { status: 500 }
+            );
+        }
+
         const viviendaOcupada = await prisma.registro_residencial.findFirst({
             where: {
                 id_vivienda: idVivienda,
-                es_vigente: true
+                es_vigente: true,
+                vivienda: { existe: true }
             }
         })
 

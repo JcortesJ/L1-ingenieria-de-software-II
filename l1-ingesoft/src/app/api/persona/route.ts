@@ -5,8 +5,11 @@ import { prisma } from "../../libs/prisma"
 export async function GET() {
   try {
     const persons = await prisma.persona.findMany({
+      orderBy: { id: 'asc' },
       include: {
-        Posee: true,
+        Posee: {
+          where: { vivienda: { existe: true } }
+        },
         cdf: {
           include: {
             registro: {
@@ -14,7 +17,7 @@ export async function GET() {
               where: {
                 es_vigente: true,
               },
-              select: {
+              include: {
                 vivienda: {
                   select: {
                     municipio: {
@@ -44,7 +47,7 @@ export async function GET() {
       genero: person.genero,
       departamento: person.cdf?.registro[0]?.vivienda.municipio.departamento.nombre,
       municipio: person.cdf?.registro[0]?.vivienda.municipio.nombre,
-      numCasas: person.Posee.length
+      numCasas: person.Posee?.length
 
     }))
 
