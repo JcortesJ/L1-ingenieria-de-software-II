@@ -86,7 +86,7 @@ export function getInputData(entityName: string) {
         placeholder: "Seleccione la modalidad de la ocupación",
         id: "modalidadOcupacion",
         defaultValue: "",
-        required: true,
+        required: false,
         options: [
           { value: "propiedad", label: "Propiedad" },
           { value: "arriendo", label: "Arriendo" },
@@ -103,7 +103,7 @@ export function getInputData(entityName: string) {
         placeholder: "Ingrese la fecha de inicio de la ocupación",
         id: "fechaInicioOcupacion",
         defaultValue: "",
-        required: true,
+        required: false,
         dependsFrom: {
           field: "esCabezaFamilia",
           value: true,
@@ -115,7 +115,7 @@ export function getInputData(entityName: string) {
         placeholder: "Ingrese la fecha de fin de la ocupación",
         id: "fechaFinOcupacion",
         defaultValue: "",
-        required: true,
+        required: false,
         dependsFrom: {
           field: "esCabezaFamilia",
           value: true,
@@ -179,12 +179,50 @@ export function getInputData(entityName: string) {
   if (entityName === "delete") {
     data = [
       {
-        label: "Ingrese el identificador de la vivienda",
+        label: "Ingrese el identificador de la vivienda a eliminar",
         type: "text",
         placeholder: "Ej: 1234567890",
-        id: "idVivienda",
+        id: "idViviendaDelete",
         defaultValue: "",
         required: true,
+      },
+      {
+        label:
+          "Ingrese el identificador de la vivienda a la que se trasladarán los habitantes",
+        type: "text",
+        placeholder: "Ej: 1234567890",
+        id: "idViviendaTransfer",
+        defaultValue: "",
+        required: true,
+      },
+      {
+        label: "Ingrese el identificador del cabeza de familia",
+        type: "text",
+        placeholder: "Ej: 1234567890",
+        id: "idCabezaFamilia",
+        defaultValue: "",
+        required: true,
+      },
+      {
+        label: "Ingrese la fecha de inicio de la ocupación",
+        type: "date",
+        placeholder: "Ingrese la fecha de inicio de la ocupación",
+        id: "fechaInicioOcupacion",
+        defaultValue: "",
+        required: true,
+      },
+      {
+        label: "Ingrese la modalidad de la ocupación",
+        type: "select",
+        placeholder: "Seleccione la modalidad de la ocupación",
+        id: "modalidadOcupacion",
+        defaultValue: "",
+        required: true,
+        options: [
+          { value: "propiedad", label: "Propiedad" },
+          { value: "arriendo", label: "Arriendo" },
+          { value: "otro", label: "Otro" },
+        ],
       },
     ];
   }

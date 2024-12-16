@@ -89,11 +89,62 @@ export function FormularioModal({
       return false;
     }
 
-    const fechaInicio = new Date(formValues["fechaInicio"]);
-    const fechaFin = new Date(formValues["fechaFin"]);
-    if (fechaInicio > fechaFin) {
-      setError("La fecha de inicio no puede ser mayor a la fecha de fin");
-      return false;
+    if (formValues["genero"]) {
+      const fechaInicio = new Date(formValues["fechaInicioOcupacion"]);
+      const fechaFin = new Date(formValues["fechaFinOcupacion"]);
+      if (fechaInicio > fechaFin) {
+        setError("La fecha de inicio no puede ser mayor a la fecha de fin");
+        return false;
+      } else if (!fechaInicio && fechaFin) {
+        setError("La fecha de inicio no puede estar vacía");
+        return false;
+      }
+      const idVivienda = formValues["idVivienda"];
+      if (!idVivienda && !formValues["modalidadOcupacion"] && !fechaInicio) {
+        return true;
+      } else if (
+        idVivienda &&
+        !formValues["modalidadOcupacion"] &&
+        !fechaInicio
+      ) {
+        setError("Debes completar todos los campos de la vivienda");
+        return false;
+      } else if (
+        idVivienda &&
+        !formValues["modalidadOcupacion"] &&
+        fechaInicio
+      ) {
+        setError("Debes completar todos los campos de la vivienda");
+        return false;
+      } else if (
+        idVivienda &&
+        formValues["modalidadOcupacion"] &&
+        !fechaInicio
+      ) {
+        setError("Debes completar todos los campos de la vivienda");
+        return false;
+      } else if (
+        !idVivienda &&
+        formValues["modalidadOcupacion"] &&
+        fechaInicio
+      ) {
+        setError("Debes completar todos los campos de la vivienda");
+        return false;
+      } else if (
+        !idVivienda &&
+        !formValues["modalidadOcupacion"] &&
+        fechaInicio
+      ) {
+        setError("Debes completar todos los campos de la vivienda");
+        return false;
+      } else if (
+        !idVivienda &&
+        formValues["modalidadOcupacion"] &&
+        !fechaInicio
+      ) {
+        setError("Debes completar todos los campos de la vivienda");
+        return false;
+      }
     }
     // Validar fechas en orden cronológico
     const dateInputs = inputs.filter(

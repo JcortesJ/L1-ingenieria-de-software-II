@@ -1,12 +1,18 @@
-import { Home, Edit, Map } from 'lucide-react'
-import { Card, CardContent } from "@/components/ui/card"
-import { useState } from 'react'
-import { Button } from "@/components/ui/button"
+import { Home, Edit, Map } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
-import { ViviendaType } from '@/testdata/dataViviendas'
-import { EditViviendaModal } from './EditViviendaModal'
+import { ViviendaType } from "@/testdata/dataViviendas";
+import { EditViviendaModal } from "./EditViviendaModal";
 
-const ViviendaCard = ({ vivienda, onUpdate }: { vivienda: ViviendaType; onUpdate: (updatedVivienda: ViviendaType) => void }) => {
+const ViviendaCard = ({
+  vivienda,
+  onUpdate,
+}: {
+  vivienda: ViviendaType;
+  onUpdate: (updatedVivienda: ViviendaType) => void;
+}) => {
   const [isModalEdit, setIsModalEdit] = useState(false);
 
   return (
@@ -17,7 +23,9 @@ const ViviendaCard = ({ vivienda, onUpdate }: { vivienda: ViviendaType; onUpdate
             variant="ghost"
             size="icon"
             className="absolute top-2 right-2"
-            onClick={() => { setIsModalEdit(true) }}
+            onClick={() => {
+              setIsModalEdit(true);
+            }}
           >
             <Edit className="h-4 w-4" />
           </Button>
@@ -27,7 +35,8 @@ const ViviendaCard = ({ vivienda, onUpdate }: { vivienda: ViviendaType; onUpdate
           <h3 className="font-bold mb-2">{vivienda.direccion}</h3>
           <div className="text-sm space-y-1">
             <p className="flex items-center">
-              <span className='font-bold'>ID Vivienda:</span>{vivienda.id_vivienda}
+              <span className="font-bold">ID:</span>
+              {vivienda.id_vivienda}
             </p>
             <p className="flex items-center">
               <Home className="w-4 h-4 mr-2" /> {vivienda.tipo}
@@ -49,4 +58,3 @@ const ViviendaCard = ({ vivienda, onUpdate }: { vivienda: ViviendaType; onUpdate
 };
 
 export default ViviendaCard;
-

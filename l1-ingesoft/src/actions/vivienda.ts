@@ -16,8 +16,6 @@ export const fetchViviendas = async () => {
   }
 };
 
-
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const createVivienda = async (data: Record<string, any>) => {
   try {
@@ -31,22 +29,33 @@ export const createVivienda = async (data: Record<string, any>) => {
     return { data: null, error: "No se pudo crear la vivienda." };
   }
 };
-  interface UpdateViviendaData {
-    direccion: string;
+interface UpdateViviendaData {
+  direccion: string;
+}
+
+export const updateDireccionVivienda = async (
+  id: number,
+  data: UpdateViviendaData
+) => {
+  const response = await fetch(`/api/viviendas/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update vivienda");
   }
-  
-  export const updateDireccionVivienda = async (id: number, data: UpdateViviendaData) => {
-    const response = await fetch(`/api/viviendas/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-  
-    if (!response.ok) {
-      throw new Error('Failed to update vivienda');
-    }
-  
-    return response.json();
-  };
+
+  return response.json();
+};
+
+export const deleteVivienda = async (data: Record<string, any>) => {
+  const response = await fetch(`/api/viviendas/${data.idVivienda}`, {
+    method: "DELETE",
+    body: JSON.stringify(data),
+  });
+  return response.json();
+};
