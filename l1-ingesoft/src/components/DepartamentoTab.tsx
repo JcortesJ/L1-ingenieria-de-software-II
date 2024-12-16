@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Alert, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from 'lucide-react'
 import DepartamentoCard from "@/components/DepartamentoCard" // Componente similar al MunicipioCard
-import dataDepartamentos, { DepartamentoType } from "@/testdata/dataDepartamento"
+import { DepartamentoType } from "@/testdata/dataDepartamento"
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { fetchDepartamentos } from "@/actions/departamentos"
 
@@ -18,29 +18,32 @@ const DepartamentoTab = () => {
   >([]);
   const [nombreFilter, setNombreFilter] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Simulación de consulta a la API
 
-    // const loadData = async () => {
-    //     const { data, error } = await fetchDepartamentos(); // Llama a la función fetch
+    const loadData = async () => {
+        setLoading(true); // Establecer el estado de carga en verdadero
+        const { data, error } = await fetchDepartamentos(); // Llama a la función fetch
 
-    //     if (error) {
-    //       setError(error); // Si hay un error, actualiza el estado de error
-    //     } else {
-    //       setError(null) // Restablecer el error si no hay error
-    //       setDepartamentos(data);
-    //       setFilteredDepartamentos(data) // Si no hay error, actualiza el estado con los datos
-    //     }
-    //   };
+        if (error) {
+          setError(error);
+        } else {
+          setError(null) 
+          setDepartamentos(data);
+          setFilteredDepartamentos(data) 
+        }
+        setLoading(false); 
+      };
 
-    //loadData()
-    setDepartamentos(dataDepartamentos);
-    setFilteredDepartamentos(dataDepartamentos);
+    loadData()
+   
   }, []);
 
   useEffect(() => {
-    // Filtrar departamentos por nombre
+    if(!loading){
+      // Filtrar departamentos por nombre
     const filtered = departamentos.filter((departamento) =>
       departamento.nombre.toLowerCase().startsWith(nombreFilter.toLowerCase())
     );
@@ -55,6 +58,8 @@ const DepartamentoTab = () => {
     }
 
     setFilteredDepartamentos(filtered); // Actualiza los departamentos filtrados
+    }
+    
   }, [nombreFilter, departamentos]);
 
   return (
