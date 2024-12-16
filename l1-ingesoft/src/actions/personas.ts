@@ -1,10 +1,10 @@
 // Importa cualquier dependencia que necesites
 export const fetchPersonas = async () => {
   try {
-    const response = await fetch("/api/personas", {
+    const response = await fetch("/api/persona", {
       method: "GET", // Aquí especificamos que es un GET
     });
-
+    console.log(response)
     if (!response.ok) {
       throw new Error("Error al obtener los datos de la API");
     }

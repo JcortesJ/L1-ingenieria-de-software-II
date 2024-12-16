@@ -26,16 +26,16 @@ import { fetchPersonas } from "@/actions/personas";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
-import dataPersonas, { PersonaType } from "@/testdata/dataPersona";
+import { PersonaType } from "@/testdata/dataPersona";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FormularioModal } from "./FormularioModal";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getInputData } from "@/lib/utils";
+import { Switch } from "./ui/switch";
 //import { fetchPersonas } from "@/actions/personas";
 
 const formSchema = z.object({
-  livingStatus: z.enum(["all", "alive", "deceased"]),
+  //livingStatus: z.enum(["all", "alive", "deceased"]),
   houses: z.enum(["all", "0", "1", "2", "3+"]),
   department: z.string().optional(),
   searchName: z.string().optional(),
@@ -47,20 +47,7 @@ const aplicarFiltros = (
   values: z.infer<typeof formSchema>
 ): PersonaType[] => {
   const filteredPersonas = personas.filter((persona: PersonaType) => {
-    // Filtrar por estado de vida
-    if (
-      values.livingStatus !== "all" &&
-      persona.vivo !== (values.livingStatus === "alive")
-    )
-      return false;
-
-    // Filtrar por estado de vida
-    if (
-      values.livingStatus !== "all" &&
-      persona.vivo !== (values.livingStatus === "alive")
-    )
-      return false;
-
+  
     // Filtrar por número de casas
     if (values.houses !== "all") {
       if (values.houses === "3+" && persona.numCasas < 3) return false;
@@ -88,7 +75,7 @@ const aplicarFiltros = (
     )
       return false;
 
-    // Filtrar solo cabezas de familia
+    //Filtrar solo cabezas de familia
     if (values.isHeadOfFamily && persona.id !== persona.id_cabeza_familia)
       return false;
 
@@ -99,14 +86,14 @@ const aplicarFiltros = (
 };
 
 const PersonaTab = () => {
-  const [filteredPersonas, setFilteredPersonas] = useState(dataPersonas);
-
+  const [filteredPersonas, setFilteredPersonas] = useState<PersonaType[]>([]);
+  const [personas, setPersonas] = useState<PersonaType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      livingStatus: "all",
       houses: "all",
       department: "",
       searchName: "",
@@ -114,8 +101,31 @@ const PersonaTab = () => {
     },
   });
 
+
+
+  useEffect(() => {
+    //simulacion primea consulta a la APi
+    const loadData = async () => {
+      setIsLoading(true); // Marca como cargando
+      const { data, error } = await fetchPersonas(); // Llama a la función fetch
+
+      if (error) {
+        setError(error); // Si hay un error, actualiza el estado de error
+      } else {
+        setError(null) // Restablecer el error si no hay error
+        setPersonas(data); // Si no hay error, actualiza el estado con los datos
+        console.log(personas);
+      }
+      setIsLoading(false);
+    };
+    loadData();
+
+    //setFilteredPersonas(dataPersonas);
+  }, []);
   const applyFilters = useCallback((values: z.infer<typeof formSchema>) => {
-    const filteredData = aplicarFiltros(dataPersonas, values);
+    if (!personas.length) return; // Evitar aplicar filtros cuando no hay datos
+
+    const filteredData = aplicarFiltros(personas, values);
     if (filteredData.length === 0) {
       setError("No se encontraron resultados para los filtros seleccionados");
       setFilteredPersonas([]);
@@ -123,37 +133,21 @@ const PersonaTab = () => {
       setError(null);
       setFilteredPersonas(filteredData);
     }
-  }, []);
-
-  useEffect(() => {
-    //simulacion primea consulta a la APi
-    // const loadData = async () => {
-    //     const { data, error } = await fetchPersonas(); // Llama a la función fetch
-
-    //     if (error) {
-    //       setError(error); // Si hay un error, actualiza el estado de error
-    //     } else {
-    //       setError(null) // Restablecer el error si no hay error
-    //       setFilteredPersonas(data); // Si no hay error, actualiza el estado con los datos
-    //     }
-    //   };
-
-    // loadData();
-    setFilteredPersonas(dataPersonas);
-  }, []);
+  }, [personas]);
   // Se aplica el filtro cada vez que un valor en el formulario cambia
   // Se aplica el filtro cada vez que un valor en el formulario cambia
-  const livingStatus = form.watch("livingStatus");
   const houses = form.watch("houses");
   const department = form.watch("department");
   const searchName = form.watch("searchName");
   const isHeadOfFamily = form.watch("isHeadOfFamily");
 
   useEffect(() => {
-    const values = form.getValues();
-    applyFilters(values);
+    if (!isLoading) {
+      const values = form.getValues();
+      applyFilters(values);
+    }
+
   }, [
-    livingStatus,
     houses,
     department,
     searchName,
@@ -170,30 +164,7 @@ const PersonaTab = () => {
       <Form {...form}>
         <form className="space-y-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-            <FormField
-              control={form.control}
-              name="livingStatus"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-bold">Estado</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="bg-gray-200">
-                        <SelectValue placeholder="Seleccionar estado" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
-                      <SelectItem value="alive">Vivos</SelectItem>
-                      <SelectItem value="deceased">Fallecidos</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
+            
             <FormField
               control={form.control}
               name="houses"
