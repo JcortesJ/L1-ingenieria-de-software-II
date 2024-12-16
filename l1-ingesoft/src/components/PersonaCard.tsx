@@ -6,12 +6,14 @@ import { Button } from "./ui/button";
 import { EditPersonaModal } from './EditPersonaModal';
 import { formatearFecha } from '@/lib/utils';
 import { FaTransgender } from "react-icons/fa";
+import { ChangeResidenciaModal } from './ChangeResidenciaModal';
 
 const PersonaCard = ({ persona, onUpdate }: { persona: PersonaType; onUpdate: (updatedPersona: PersonaType) => void }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalChangeResidencia, setIsModalChangeResidencia] = useState(false);
 
   return (
-    <Card className="w-64 h-80 p-0 bg-gray-100 border-gray-500 relative">
+    <Card className="w-64 h-88 p-0 bg-gray-100 border-gray-500 relative">
       <CardContent className="p-4 flex flex-col h-full">
         <Button
           variant="ghost"
@@ -45,11 +47,14 @@ const PersonaCard = ({ persona, onUpdate }: { persona: PersonaType; onUpdate: (u
 
           <Map className="w-5 h-5 text-muted-foreground" />
           <span className="truncate" title={persona.departamento}>{persona.departamento}</span>
-
-
-
-
+        
         </div>
+        <Button className={`${persona.id == persona.id_cabeza_familia ? "hidden" : "block"} bg-green-500 font-bold mt-4 w-40`} 
+            onClick={() => setIsModalChangeResidencia(true)}
+            variant="ghost" 
+            size="sm">
+            Cambiar Residencia
+          </Button>
       </CardContent>
 
       <EditPersonaModal
@@ -57,6 +62,12 @@ const PersonaCard = ({ persona, onUpdate }: { persona: PersonaType; onUpdate: (u
         onClose={() => setIsModalOpen(false)}
         persona={persona}
         onUpdate={onUpdate}
+      />
+      <ChangeResidenciaModal
+        isOpen={isModalChangeResidencia}
+        onClose={() => setIsModalChangeResidencia(false)}
+        persona={persona}
+       
       />
     </Card>
   );

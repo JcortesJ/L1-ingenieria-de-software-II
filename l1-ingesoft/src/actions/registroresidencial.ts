@@ -20,10 +20,16 @@ export const fetchRegistroResidencial = async () => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const createRegistroResidencial = async (data: any) => {
+export const createRegistroResidencial = async (idCdf:number, idVivienda:number, modalidadOcupacion:string, fechaInicio:string, fechaFin:string) => {
   const response = await fetch("/api/registro/create", {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      idCdf,
+      idVivienda,
+      modalidadOcupacion,
+      fechaInicio,
+      fechaFin
+    }),
   });
 
   if (!response.ok) {

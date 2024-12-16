@@ -3,6 +3,7 @@ import { Map } from "lucide-react";
 import { RegistroResidencialType } from "@/testdata/dataRegistroR";
 import { formatearFecha } from "@/lib/utils";
 
+
 interface RegistroCardProps {
   registro: RegistroResidencialType;
 }
@@ -54,6 +55,7 @@ const RegistroCard = ({ registro }: RegistroCardProps) => {
             </span>
             
           </p>
+          
         </div>
       </CardContent>
     </Card>

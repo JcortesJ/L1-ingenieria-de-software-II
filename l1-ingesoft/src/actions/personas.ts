@@ -54,3 +54,27 @@ export const updatePersona = async (id: number, data: UpdatePersonaData) => {
 
   return response.json();
 };
+// actions/viviendas.ts
+
+export async function getViviendasVacias() {
+  try {
+    const response = await fetch('/api/viviendas/disponibles', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error al obtener viviendas vacías');
+    }
+
+    const data = await response.json();
+    return { data, error: null };
+  } catch (error) {
+    console.error('Error fetching empty houses:', error);
+    return { data: null, error: (error as Error).message };
+  }
+}
+
