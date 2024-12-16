@@ -27,12 +27,17 @@ export function getInputData(entityName: string) {
         required: true,
       },
       {
-        label: "¿Está vivo?",
-        type: "checkbox",
-        placeholder: "Está vivo",
-        id: "vivo",
-        defaultValue: true,
+        label: "Genero",
+        type: "select",
+        placeholder: "Seleccione el genero",
+        id: "genero",
+        defaultValue: "",
         required: true,
+        options: [
+          { value: "masculino", label: "Masculino" },
+          { value: "femenino", label: "Femenino" },
+          { value: "otro", label: "Otro" },
+        ],
       },
       {
         label: "¿Es cabeza de familia?",
@@ -68,11 +73,16 @@ export function getInputData(entityName: string) {
       },
       {
         label: "Ingrese la modalidad de la ocupación",
-        type: "text",
-        placeholder: "Ej: Propiedad, Arriendo, etc",
+        type: "select",
+        placeholder: "Seleccione la modalidad de la ocupación",
         id: "modalidadOcupacion",
         defaultValue: "",
         required: true,
+        options: [
+          { value: "propiedad", label: "Propiedad" },
+          { value: "arriendo", label: "Arriendo" },
+          { value: "otro", label: "Otro" },
+        ],
         dependsFrom: {
           field: "esCabezaFamilia",
           value: true,
@@ -144,11 +154,18 @@ export function getInputData(entityName: string) {
     data = [
       {
         label: "Tipo de vivienda",
-        type: "text",
-        placeholder: "Ej: Casa, Apartamento, etc",
+        type: "select",
+        placeholder: "Seleccione el tipo de vivienda",
         id: "tipoVivienda",
         defaultValue: "",
         required: true,
+        options: [
+          { value: "casa", label: "Casa" },
+          { value: "apartamento", label: "Apartamento" },
+          { value: "habitacion", label: "Habitación" },
+          { value: "local", label: "Local" },
+          { value: "otro", label: "Otro" },
+        ],
       },
       {
         label: "Dirección",

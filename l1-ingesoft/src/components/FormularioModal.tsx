@@ -17,6 +17,7 @@ interface FormularioModalProps {
     id: string;
     defaultValue: any;
     required: boolean;
+    options?: { value: string; label: string }[];
     dependsFrom?: {
       field: string;
       value: boolean;
@@ -80,7 +81,20 @@ export function FormularioModal({
         }
       }
     }
+    //Validar que la fecha de nacimiento sea menor a la fecha actual
+    const fechaNacimiento = new Date(formValues["fechaNacimiento"]);
+    const fechaActual = new Date();
+    if (fechaNacimiento > fechaActual) {
+      setError("La fecha de nacimiento no puede ser mayor a la fecha actual");
+      return false;
+    }
 
+    const fechaInicio = new Date(formValues["fechaInicio"]);
+    const fechaFin = new Date(formValues["fechaFin"]);
+    if (fechaInicio > fechaFin) {
+      setError("La fecha de inicio no puede ser mayor a la fecha de fin");
+      return false;
+    }
     // Validar fechas en orden cronológico
     const dateInputs = inputs.filter(
       (input) => input.type === "date" && shouldShowField(input)
@@ -120,29 +134,48 @@ export function FormularioModal({
                     {input.label}
                     {input.required && <span className="text-red-500">*</span>}
                   </label>
-                  <input
-                    id={input.id}
-                    type={input.type}
-                    className={`border p-2 rounded ${
-                      input.type === "checkbox" ? "w-5 h-5 self-start" : ""
-                    }`}
-                    placeholder={input.placeholder}
-                    required={input.required}
-                    checked={
-                      input.type === "checkbox"
-                        ? formValues[input.id]
-                        : undefined
-                    }
-                    value={formValues[input.id]}
-                    onChange={(e) =>
-                      handleInputChange(
-                        input.id,
+                  {input.type === "select" ? (
+                    <select
+                      id={input.id}
+                      className="border p-2 rounded"
+                      value={formValues[input.id]}
+                      onChange={(e) =>
+                        handleInputChange(input.id, e.target.value)
+                      }
+                      required={input.required}
+                    >
+                      <option value="">{input.placeholder}</option>
+                      {input.options?.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      id={input.id}
+                      type={input.type}
+                      className={`border p-2 rounded ${
+                        input.type === "checkbox" ? "w-5 h-5 self-start" : ""
+                      }`}
+                      placeholder={input.placeholder}
+                      required={input.required}
+                      checked={
                         input.type === "checkbox"
-                          ? e.target.checked
-                          : e.target.value
-                      )
-                    }
-                  />
+                          ? formValues[input.id]
+                          : undefined
+                      }
+                      value={formValues[input.id]}
+                      onChange={(e) =>
+                        handleInputChange(
+                          input.id,
+                          input.type === "checkbox"
+                            ? e.target.checked
+                            : e.target.value
+                        )
+                      }
+                    />
+                  )}
                 </div>
               ) : null
             )}
