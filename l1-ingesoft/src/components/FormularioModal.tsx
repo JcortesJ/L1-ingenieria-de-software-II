@@ -88,61 +88,19 @@ export function FormularioModal({
       setError("La fecha de nacimiento no puede ser mayor a la fecha actual");
       return false;
     }
-
+    const fechaInicio = new Date(formValues["fechaInicioOcupacion"]);
+    const fechaFin = new Date(formValues["fechaFinOcupacion"]);
     if (formValues["genero"]) {
-      const fechaInicio = new Date(formValues["fechaInicioOcupacion"]);
-      const fechaFin = new Date(formValues["fechaFinOcupacion"]);
       if (fechaInicio > fechaFin) {
-        setError("La fecha de inicio no puede ser mayor a la fecha de fin");
-        return false;
-      } else if (!fechaInicio && fechaFin) {
-        setError("La fecha de inicio no puede estar vacía");
+        setError(
+          "La fecha de inicio de ocupación no puede ser mayor a la fecha de fin de ocupación"
+        );
         return false;
       }
-      const idVivienda = formValues["idVivienda"];
-      if (!idVivienda && !formValues["modalidadOcupacion"] && !fechaInicio) {
-        return true;
-      } else if (
-        idVivienda &&
-        !formValues["modalidadOcupacion"] &&
-        !fechaInicio
-      ) {
-        setError("Debes completar todos los campos de la vivienda");
-        return false;
-      } else if (
-        idVivienda &&
-        !formValues["modalidadOcupacion"] &&
-        fechaInicio
-      ) {
-        setError("Debes completar todos los campos de la vivienda");
-        return false;
-      } else if (
-        idVivienda &&
-        formValues["modalidadOcupacion"] &&
-        !fechaInicio
-      ) {
-        setError("Debes completar todos los campos de la vivienda");
-        return false;
-      } else if (
-        !idVivienda &&
-        formValues["modalidadOcupacion"] &&
-        fechaInicio
-      ) {
-        setError("Debes completar todos los campos de la vivienda");
-        return false;
-      } else if (
-        !idVivienda &&
-        !formValues["modalidadOcupacion"] &&
-        fechaInicio
-      ) {
-        setError("Debes completar todos los campos de la vivienda");
-        return false;
-      } else if (
-        !idVivienda &&
-        formValues["modalidadOcupacion"] &&
-        !fechaInicio
-      ) {
-        setError("Debes completar todos los campos de la vivienda");
+      if (fechaFin && !fechaInicio) {
+        setError(
+          "La fecha de inicio de ocupación es obligatoria si la fecha de fin de ocupación es seleccionada"
+        );
         return false;
       }
     }
