@@ -10,7 +10,7 @@ export async function GET() {
 
         const transformedDepartamentos = departamentos.map(departamento => ({
             id_departamento: departamento.id,
-            nomre: departamento.nombre
+            nombre: departamento.nombre
         }))
 
         return NextResponse.json(transformedDepartamentos);
