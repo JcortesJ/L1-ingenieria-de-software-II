@@ -74,7 +74,7 @@ export function getInputData(entityName: string) {
         placeholder: "Ej: 1234567890",
         id: "idVivienda",
         defaultValue: "",
-        required: true,
+        required: false,
         dependsFrom: {
           field: "esCabezaFamilia",
           value: true,
@@ -130,30 +130,6 @@ export function getInputData(entityName: string) {
         required: true,
         dependsFrom: {
           field: "esCabezaFamilia",
-          value: true,
-        },
-      },
-      {
-        label: "¿Tiene una vivienda?",
-        type: "checkbox",
-        placeholder: "Tiene una vivienda",
-        id: "tieneVivienda",
-        defaultValue: false,
-        required: false,
-        dependsFrom: {
-          field: "esCabezaFamilia",
-          value: false,
-        },
-      },
-      {
-        label: "Ingrese el identificador de la vivienda",
-        type: "text",
-        placeholder: "Ej: 1234567890",
-        id: "idVivienda",
-        defaultValue: "",
-        required: true,
-        dependsFrom: {
-          field: "tieneVivienda",
           value: true,
         },
       },
