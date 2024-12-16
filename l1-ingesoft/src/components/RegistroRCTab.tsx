@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle } from "lucide-react";
 import { RegistroResidencialType } from "@/testdata/dataRegistroR";
 import { fetchRegistroResidencial } from "@/actions/registroresidencial";
 import RegistroCard from "./RegistroCard";
@@ -14,11 +14,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { AnimatedCard } from "./ui/AnimatedCard";
+import { Skeleton } from "./ui/skeleton";
 
 const RegistroRCTab = () => {
-  const [registroResidencial, setRegistroResidencial] = useState<RegistroResidencialType[]>([]);
+  const [registroResidencial, setRegistroResidencial] = useState<
+    RegistroResidencialType[]
+  >([]);
   const [nombreFilter, setNombreFilter] = useState("");
-  const [filtroVigente, setFiltroVigente] = useState<"todos" | "vigentes" | "no-vigentes">("todos");
+  const [filtroVigente, setFiltroVigente] = useState<
+    "todos" | "vigentes" | "no-vigentes"
+  >("todos");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -57,8 +63,14 @@ const RegistroRCTab = () => {
   }, [registroResidencial, nombreFilter, filtroVigente, loading]);
 
   useEffect(() => {
-    if (!loading && filteredRegistroResidencial.length === 0 && (nombreFilter !== "" || filtroVigente !== "todos")) {
-      setError("No se encontraron registros residenciales que coincidan con los filtros aplicados.");
+    if (
+      !loading &&
+      filteredRegistroResidencial.length === 0 &&
+      (nombreFilter !== "" || filtroVigente !== "todos")
+    ) {
+      setError(
+        "No se encontraron registros residenciales que coincidan con los filtros aplicados."
+      );
     } else {
       setError(null);
     }
@@ -107,17 +119,21 @@ const RegistroRCTab = () => {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {!loading &&
-          filteredRegistroResidencial.map((registro) => (
-            <RegistroCard
-              key={registro.id_registro}
-              registro={registro}
-            />
-          ))}
+        {loading
+          ? [...Array(10)].map((_, index) => (
+              <AnimatedCard key={index}>
+                <Skeleton className="h-10 w-100vw" />
+                <Skeleton className="h-10 w-100vw" />
+                <Skeleton className="h-10 w-100vw" />
+                <p>Cargando...</p>
+              </AnimatedCard>
+            ))
+          : filteredRegistroResidencial.map((registro) => (
+              <RegistroCard key={registro.id_registro} registro={registro} />
+            ))}
       </div>
     </div>
   );
 };
 
 export default RegistroRCTab;
-

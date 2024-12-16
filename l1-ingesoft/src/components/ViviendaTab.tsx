@@ -1,6 +1,10 @@
 "use client";
 
-import { createVivienda, fetchViviendas } from "@/actions/vivienda";
+import {
+  createVivienda,
+  deleteVivienda,
+  fetchViviendas,
+} from "@/actions/vivienda";
 import { useState, useEffect, useCallback } from "react";
 import { ViviendaType } from "@/testdata/dataViviendas";
 import ViviendaCard from "./ViviendaCard";
@@ -8,11 +12,13 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { FormularioModal } from "./FormularioModal";
 import { getInputData } from "@/lib/utils";
 import { Input } from "./ui/input";
-
+import { createRegistroResidencial } from "@/actions/registroresidencial";
 
 const ViviendaTab = () => {
   const [viviendas, setViviendas] = useState<ViviendaType[]>([]);
-  const [filteredViviendas, setFilteredViviendas] = useState<ViviendaType[]>([]);
+  const [filteredViviendas, setFilteredViviendas] = useState<ViviendaType[]>(
+    []
+  );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [nombreFilter, setNombreFilter] = useState("");
@@ -25,16 +31,16 @@ const ViviendaTab = () => {
       if (error) {
         setError(error);
       } else {
-        setError(null)
+        setError(null);
         setViviendas(data);
         setFilteredViviendas(data);
       }
       setLoading(false);
     };
 
-    loadData()
+    loadData();
   }, []);
-  const filters =()=>{
+  const filters = () => {
     if (!loading) {
       const filtered = viviendas.filter((vivienda) =>
         vivienda.direccion.toLowerCase().startsWith(nombreFilter.toLowerCase())
@@ -50,10 +56,10 @@ const ViviendaTab = () => {
 
       setFilteredViviendas(filtered);
     }
-  }
+  };
 
   useEffect(() => {
-    filters()
+    filters();
   }, [nombreFilter, viviendas, loading]);
 
   const showErrorAlert = error || viviendas.length === 0;
@@ -79,12 +85,48 @@ const ViviendaTab = () => {
   }
 
   const updateViviendaInList = useCallback((updatedVivienda: ViviendaType) => {
-    setViviendas(prevViviendas =>
-      prevViviendas.map(v => v.id_vivienda === updatedVivienda.id_vivienda ? updatedVivienda : v)
+    setViviendas((prevViviendas) =>
+      prevViviendas.map((v) =>
+        v.id_vivienda === updatedVivienda.id_vivienda ? updatedVivienda : v
+      )
     );
-    filters()
-
+    filters();
   }, []);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function handleDelete(data: Record<string, any>): Promise<void> {
+    const {
+      idViviendaDelete,
+      idViviendaTransfer,
+      idCabezaFamilia,
+      fechaInicioOcupacion,
+      modalidadOcupacion,
+    } = data;
+    const viviendaData = {
+      idVivienda: Number(idViviendaDelete),
+      idViviendaTransfer: Number(idViviendaTransfer),
+      idCabezaFamilia: Number(idCabezaFamilia),
+      fechaInicio: fechaInicioOcupacion,
+      modalidadOcupacion: modalidadOcupacion,
+    };
+    const { error } = await deleteVivienda(viviendaData);
+    if (error) {
+      setError(error);
+    } else {
+      const { error } = await createRegistroResidencial(
+        Number(idCabezaFamilia),
+        Number(idViviendaTransfer),
+        modalidadOcupacion,
+        fechaInicioOcupacion,
+        ""
+      );
+      if (error) {
+        setError(error);
+      } else {
+        setError(null);
+      }
+    }
+  }
 
   return (
     <div className="container mx-auto py-8">
@@ -115,10 +157,10 @@ const ViviendaTab = () => {
           />
           <FormularioModal
             className="w-full md:w-[180px] bg-destructive border-none hover:bg-destructive/90 hover:text-white"
-            title="Eliminar Vivienda"
+            title="Para eliminar, reubica los habitantes a otra vivienda en caso de que esta tenga habitantes."
             name="Eliminar Vivienda"
             inputs={getInputData("delete")}
-            onSubmit={handleSubmit}
+            onSubmit={handleDelete}
           />
         </section>
       </div>
@@ -144,4 +186,3 @@ const ViviendaTab = () => {
 };
 
 export default ViviendaTab;
-

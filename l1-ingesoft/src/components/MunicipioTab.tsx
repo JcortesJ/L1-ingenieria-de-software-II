@@ -172,22 +172,22 @@ const MunicipioTab = () => {
 
       {filteredMunicipios.length > 0 && !error ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {isLoading ? (
-            <AnimatedCard>
-              <Skeleton className="h-10 w-100vw" />
-              <Skeleton className="h-10 w-100vw" />
-              <Skeleton className="h-10 w-100vw" />
-              <p>Cargando...</p>
-            </AnimatedCard>
-          ) : (
-            filteredMunicipios.map((municipio) => (
-              <MunicipioCard
-                key={municipio.id_municipio}
-                municipio={municipio}
-                onCambiarAlcalde={() => handleOpenModal(municipio)}
-              />
-            ))
-          )}
+          {isLoading
+            ? [...Array(10)].map((_, index) => (
+                <AnimatedCard key={index}>
+                  <Skeleton className="h-10 w-100vw" />
+                  <Skeleton className="h-10 w-100vw" />
+                  <Skeleton className="h-10 w-100vw" />
+                  <p>Cargando...</p>
+                </AnimatedCard>
+              ))
+            : filteredMunicipios.map((municipio) => (
+                <MunicipioCard
+                  key={municipio.id_municipio}
+                  municipio={municipio}
+                  onCambiarAlcalde={() => handleOpenModal(municipio)}
+                />
+              ))}
         </div>
       ) : null}
       {selectedMunicipio && (
