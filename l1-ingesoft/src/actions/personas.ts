@@ -35,11 +35,11 @@ export const createPersona = async (data: Record<string, any>) => {
 
  interface UpdatePersonaData {
     nombre: string;
-    vivo: boolean;
+    genero: string;
   }
   
   export const updatePersona = async (id: number, data: UpdatePersonaData) => {
-    const response = await fetch(`/api/personas/${id}`, {
+    const response = await fetch(`/api/persona/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

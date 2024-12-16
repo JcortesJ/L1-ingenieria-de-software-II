@@ -106,7 +106,7 @@ export interface PersonaType {
   id_cabeza_familia: number; // ID de la persona cabeza de familia
   nombre: string; // Nombre de la persona
   fecha_nacimiento: string; // Fecha de nacimiento en formato "DD/MM/AAAA"
-  vivo: boolean; // Si la persona está viva o no
+  genero: string; // Si la persona está viva o no
   numCasas: number; // Número de casas que posee
   departamento: string; // Departamento de residencia
   municipio: string; // Municipio de residencia

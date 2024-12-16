@@ -4,21 +4,20 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Switch } from "./ui/switch";
-
 import { useToast } from '@/hooks/use-toast';
 import { updatePersona } from '@/actions/personas';
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface EditPersonaModalProps {
   isOpen: boolean;
   onClose: () => void;
   persona: PersonaType;
+  onUpdate: (updatedPersona: PersonaType) => void;
 }
 
-export const EditPersonaModal = ({ isOpen, onClose, persona }: EditPersonaModalProps) => {
+export const EditPersonaModal = ({ isOpen, onClose, persona, onUpdate }: EditPersonaModalProps) => {
   const [nombre, setNombre] = useState(persona.nombre);
-  const [vivo, setVivo] = useState(persona.vivo);
+  const [genero, setGenero] = useState<string>(persona.genero || "MASCULINO");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -27,7 +26,8 @@ export const EditPersonaModal = ({ isOpen, onClose, persona }: EditPersonaModalP
     setIsLoading(true);
 
     try {
-      await updatePersona(persona.id, { nombre, vivo });
+      await updatePersona(persona.id, { nombre, genero });
+      onUpdate({ ...persona, nombre, genero });
       toast({
         title: "Actualización exitosa",
         description: "Los datos de la persona han sido actualizados.",
@@ -66,14 +66,19 @@ export const EditPersonaModal = ({ isOpen, onClose, persona }: EditPersonaModalP
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="vivo" className="text-right">
-                Vivo
+              <Label htmlFor="genero" className="text-right">
+                Género
               </Label>
-              <Switch
-                id="vivo"
-                checked={vivo}
-                onCheckedChange={setVivo}
-              />
+              <Select value={genero} onValueChange={(value) => setGenero(value)}>
+                <SelectTrigger id='genero' className="bg-gray-200">
+                  <SelectValue placeholder="Seleccione género" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="MASCULINO">Masculino</SelectItem>
+                  <SelectItem value="FEMENINO">Femenino</SelectItem>
+                  <SelectItem value="NO_BINARIO">No binario</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <DialogFooter>

@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { PersonaType } from "@/testdata/dataPersona";
-import { CircleUserRound, Calendar, Home, MapPin, Map, Edit,House } from 'lucide-react';
+import { CircleUserRound, Calendar, Home, MapPin, Map, Edit, HomeIcon as House } from 'lucide-react';
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { EditPersonaModal } from './EditPersonaModal';
 import { formatearFecha } from '@/lib/utils';
+import { FaTransgender } from "react-icons/fa";
 
-
-const PersonaCard = ({ persona }: { persona: PersonaType }) => {
+const PersonaCard = ({ persona, onUpdate }: { persona: PersonaType; onUpdate: (updatedPersona: PersonaType) => void }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -30,13 +30,12 @@ const PersonaCard = ({ persona }: { persona: PersonaType }) => {
         </div>
 
         <div className="grid grid-cols-[auto,1fr] gap-3 text-sm">
+          <House className="w-5 h-5 text-muted-foreground" />
+          <span className="truncate" title={"cabeza de familia"}>{persona.id == persona.id_cabeza_familia ? "Es cabeza de familia" : "No es cabeza de familia"}</span>
           <Calendar className="w-5 h-5 text-muted-foreground" />
-          <span>{formatearFecha(persona.fecha_nacimiento) }</span>
-
-          {/* <Activity className="w-5 h-5 text-muted-foreground" />
-          <span className={persona.vivo ? "text-green-600" : "text-red-600"}>
-            {persona.vivo ? "Vivo" : "Fallecido"}
-          </span> */}
+          <span>{formatearFecha(persona.fecha_nacimiento)}</span>
+          <FaTransgender className="w-5 h-5 text-muted-foreground" />
+          <span className="truncate" title={"genero"}>{persona.genero}</span>
 
           <Home className="w-5 h-5 text-muted-foreground" />
           <span>{persona.numCasas} {persona.numCasas === 1 ? "casa" : "casas"}</span>
@@ -46,8 +45,10 @@ const PersonaCard = ({ persona }: { persona: PersonaType }) => {
 
           <Map className="w-5 h-5 text-muted-foreground" />
           <span className="truncate" title={persona.departamento}>{persona.departamento}</span>
-          <House className="w-5 h-5 text-muted-foreground" />
-          <span className="truncate" title={"cabeza de familia"}>{persona.id==persona.id_cabeza_familia? "Es cabeza de familia":"No es cabeza de familia"}</span>
+
+
+
+
         </div>
       </CardContent>
 
@@ -55,6 +56,7 @@ const PersonaCard = ({ persona }: { persona: PersonaType }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         persona={persona}
+        onUpdate={onUpdate}
       />
     </Card>
   );

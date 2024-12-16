@@ -21,21 +21,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { fetchPersonas } from "@/actions/personas";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle } from 'lucide-react';
 import { PersonaType } from "@/testdata/dataPersona";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FormularioModal } from "./FormularioModal";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getInputData } from "@/lib/utils";
 import { Switch } from "./ui/switch";
-//import { fetchPersonas } from "@/actions/personas";
 
 const formSchema = z.object({
-  //livingStatus: z.enum(["all", "alive", "deceased"]),
   houses: z.enum(["all", "0", "1", "2", "3+"]),
   department: z.string().optional(),
   searchName: z.string().optional(),
@@ -47,8 +42,6 @@ const aplicarFiltros = (
   values: z.infer<typeof formSchema>
 ): PersonaType[] => {
   const filteredPersonas = personas.filter((persona: PersonaType) => {
-  
-    // Filtrar por número de casas
     if (values.houses !== "all") {
       if (values.houses === "3+" && persona.numCasas < 3) return false;
       if (
@@ -58,14 +51,12 @@ const aplicarFiltros = (
         return false;
     }
 
-    // Filtrar por nombre
     if (
       values.searchName &&
       !persona.nombre.toLowerCase().startsWith(values.searchName.toLowerCase())
     )
       return false;
 
-    // Filtrar por departamento
     if (
       values.department &&
       persona.departamento &&
@@ -75,7 +66,6 @@ const aplicarFiltros = (
     )
       return false;
 
-    //Filtrar solo cabezas de familia
     if (values.isHeadOfFamily && persona.id !== persona.id_cabeza_familia)
       return false;
 
@@ -101,29 +91,25 @@ const PersonaTab = () => {
     },
   });
 
-
-
   useEffect(() => {
-    //simulacion primea consulta a la APi
     const loadData = async () => {
-      setIsLoading(true); // Marca como cargando
-      const { data, error } = await fetchPersonas(); // Llama a la función fetch
+      setIsLoading(true);
+      const { data, error } = await fetchPersonas();
 
       if (error) {
-        setError(error); // Si hay un error, actualiza el estado de error
+        setError(error);
       } else {
-        setError(null) // Restablecer el error si no hay error
-        setPersonas(data); // Si no hay error, actualiza el estado con los datos
+        setError(null)
+        setPersonas(data);
         console.log(personas);
       }
       setIsLoading(false);
     };
     loadData();
-
-    //setFilteredPersonas(dataPersonas);
   }, []);
+
   const applyFilters = useCallback((values: z.infer<typeof formSchema>) => {
-    if (!personas.length) return; // Evitar aplicar filtros cuando no hay datos
+    if (!personas.length) return;
 
     const filteredData = aplicarFiltros(personas, values);
     if (filteredData.length === 0) {
@@ -134,8 +120,7 @@ const PersonaTab = () => {
       setFilteredPersonas(filteredData);
     }
   }, [personas]);
-  // Se aplica el filtro cada vez que un valor en el formulario cambia
-  // Se aplica el filtro cada vez que un valor en el formulario cambia
+
   const houses = form.watch("houses");
   const department = form.watch("department");
   const searchName = form.watch("searchName");
@@ -146,7 +131,6 @@ const PersonaTab = () => {
       const values = form.getValues();
       applyFilters(values);
     }
-
   }, [
     houses,
     department,
@@ -154,17 +138,42 @@ const PersonaTab = () => {
     isHeadOfFamily,
     form,
     applyFilters,
+    isLoading
   ]);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleSubmit(data: Record<string, any>): void {
     console.log(data);
   }
+
+  const updatePersonaInList = useCallback((updatedPersona: PersonaType) => {
+    setPersonas(prevPersonas =>
+      prevPersonas.map(p => p.id === updatedPersona.id ? updatedPersona : p)
+    );
+    applyFilters(form.getValues());
+  }, [applyFilters, form]);
+
   return (
     <div className="container mx-auto py-8">
       <Form {...form}>
         <form className="space-y-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
-            
+          <FormField
+              control={form.control}
+              name="searchName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-bold">Buscar por nombre</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="bg-gray-200"
+                      placeholder="Buscar por nombre"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="houses"
@@ -209,22 +218,7 @@ const PersonaTab = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="searchName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-bold">Buscar por nombre</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-gray-200"
-                      placeholder="Buscar por nombre"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            
             <FormField
               control={form.control}
               name="isHeadOfFamily"
@@ -263,7 +257,7 @@ const PersonaTab = () => {
 
       <div className="flex flex-row flex-wrap gap-2">
         {filteredPersonas.map((persona, index) => (
-          <PersonaCard persona={persona} key={index} />
+          <PersonaCard persona={persona} key={index} onUpdate={updatePersonaInList} />
         ))}
       </div>
     </div>
@@ -271,3 +265,4 @@ const PersonaTab = () => {
 };
 
 export default PersonaTab;
+
