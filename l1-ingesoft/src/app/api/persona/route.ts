@@ -41,7 +41,7 @@ export async function GET() {
       id_cabeza_familia: person.id_cdf,
       nombre: person.nombre,
       fecha_nacimiento: person.fecha_nacimiento,
-      vivo: true,
+      genero: person.genero,
       departamento: person.cdf?.registro[0]?.vivienda.municipio.departamento.nombre,
       municipio: person.cdf?.registro[0]?.vivienda.municipio.nombre,
       numCasas: person.Posee.length
