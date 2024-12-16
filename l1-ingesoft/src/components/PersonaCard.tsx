@@ -7,10 +7,12 @@ import { EditPersonaModal } from './EditPersonaModal';
 import { formatearFecha } from '@/lib/utils';
 import { FaTransgender } from "react-icons/fa";
 import { ChangeResidenciaModal } from './ChangeResidenciaModal';
+import { FamiliaModal } from './FamiliaModal';
 
 const PersonaCard = ({ persona, onUpdate }: { persona: PersonaType; onUpdate: (updatedPersona: PersonaType) => void }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalChangeResidencia, setIsModalChangeResidencia] = useState(false);
+  const [isModalFamilia, setIsModalFamilia] = useState(false);
 
   return (
     <Card className="w-64 h-88 p-0 bg-gray-100 border-gray-500 relative">
@@ -55,7 +57,14 @@ const PersonaCard = ({ persona, onUpdate }: { persona: PersonaType; onUpdate: (u
             size="sm">
             Cambiar Residencia
           </Button>
+          <Button className={`${persona.id == persona.id_cabeza_familia ? "hidden" : "block"} bg-blue-500 font-bold mt-4 w-40`} 
+            onClick={() => setIsModalFamilia(true)}
+            variant="ghost" 
+            size="sm">
+            Familiares
+          </Button>
       </CardContent>
+
 
       <EditPersonaModal
         isOpen={isModalOpen}
@@ -69,6 +78,14 @@ const PersonaCard = ({ persona, onUpdate }: { persona: PersonaType; onUpdate: (u
         persona={persona}
        
       />
+      <FamiliaModal
+       key={persona.id+"modal"}
+        isOpen={isModalFamilia}
+        onClose={() => setIsModalFamilia(false)}
+        persona={persona}
+       
+      />
+
     </Card>
   );
 }
