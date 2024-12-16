@@ -25,10 +25,25 @@ export async function POST(request: NextRequest) {
                 );
             }
 
+            const viviendaExiste = await prisma.vivienda.findFirst({
+                where: {
+                    id: idVivienda,
+                    existe: true
+                }
+            })
+
+            if (!viviendaExiste) {
+                return Response.json(
+                    { message: 'Esta vivienda no existe' },
+                    { status: 500 }
+                );
+            }
+
             const findSome = await prisma.registro_residencial.findFirst({
                 where: {
                     id_vivienda: idVivienda,
-                    es_vigente: true
+                    es_vigente: true,
+                    vivienda: { existe: true }
                 }
             })
 
@@ -38,6 +53,7 @@ export async function POST(request: NextRequest) {
                     { status: 500 }
                 );
             }
+
         }
 
         let newPersona = await prisma.persona.create({
