@@ -31,6 +31,7 @@ import { getInputData } from "@/lib/utils";
 import { Switch } from "./ui/switch";
 import { AnimatedCard } from "./ui/AnimatedCard";
 import { Skeleton } from "./ui/skeleton";
+import { toast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   houses: z.enum(["all", "0", "1", "2", "3+"]),
@@ -175,19 +176,29 @@ const PersonaTab = () => {
       nombre: nombre,
       isCdf: Boolean(esCabezaFamilia),
       genero: genero.toUpperCase(),
-      ...(!esCabezaFamilia && { idCabezaFamilia: idCabezaFamilia }),
+      ...(!Boolean(esCabezaFamilia) && {
+        idCdf: Number(idCabezaFamilia),
+      }),
       ...(idVivienda && { idVivienda: Number(idVivienda) }),
       ...(modalidadOcupacion && { modalidadOcupacion: modalidadOcupacion }),
       ...(fechaInicioOcupacion && { fechaInicio: fechaInicioOcupacion }),
       ...(fechaFinOcupacion && { fechaFin: fechaFinOcupacion }),
     };
+    console.log("personaData", personaData);
 
     console.log(personaData);
     const { data, error } = await createPersona(personaData);
     if (error) {
-      setError(error);
+      toast({
+        title: "Error al crear la persona",
+        description: error,
+        variant: "destructive",
+      });
     } else {
-      setError(null);
+      toast({
+        title: "Persona creada correctamente",
+        variant: "default",
+      });
       console.log(data);
       setPersonas((prevPersonas) => [...prevPersonas, personaData]);
     }

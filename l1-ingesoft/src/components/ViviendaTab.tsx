@@ -14,6 +14,7 @@ import { getInputData } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { createRegistroResidencial } from "@/actions/registroresidencial";
 import { Button } from "./ui/button";
+import { toast } from "@/hooks/use-toast";
 
 const ViviendaTab = () => {
   const [viviendas, setViviendas] = useState<ViviendaType[]>([]);
@@ -97,7 +98,16 @@ const ViviendaTab = () => {
     };
     const { error } = await createVivienda(viviendaData);
     if (error) {
-      setError(error);
+      toast({
+        title: "Error al crear la vivienda",
+        description: error,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Vivienda creada correctamente",
+        variant: "default",
+      });
     }
   }
 
@@ -138,9 +148,16 @@ const ViviendaTab = () => {
         ""
       );
       if (error) {
-        setError(error);
+        toast({
+          title: "Error al eliminar la vivienda",
+          description: error,
+          variant: "destructive",
+        });
       } else {
-        setError(null);
+        toast({
+          title: "Vivienda eliminada correctamente",
+          variant: "default",
+        });
       }
     }
   }
