@@ -23,7 +23,7 @@ export const FamiliaModal = ({ isOpen, onClose, persona }: FamiliaModalProps) =>
       setIsLoading(true);
       setError(null);
       try {
-        const { data, error } = await fetchMiembrosFamilia(persona.id);
+        const { data, error } = await fetchMiembrosFamilia(persona.id_cabeza_familia);
         if (error) {
           throw new Error(error);
         }

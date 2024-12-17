@@ -52,7 +52,7 @@ export const ChangeResidenciaModal = ({ isOpen, onClose, persona }: ChangeReside
     setIsLoading(true);
 
     try {
-      await createRegistroResidencial(persona.id,parseInt(selectedVivienda) , modalidadOcupacion, fechaInicio, fechaFin)
+      await createRegistroResidencial(persona.id_cabeza_familia,parseInt(selectedVivienda) , modalidadOcupacion, fechaInicio, fechaFin)
       toast({
         title: "Actualización exitosa",
         description: "La residencia de la persona ha sido actualizada.",
