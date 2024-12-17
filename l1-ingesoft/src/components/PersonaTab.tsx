@@ -168,12 +168,14 @@ const PersonaTab = () => {
       idVivienda,
       modalidadOcupacion,
       nombre,
+      idCabezaFamilia,
     } = dataSubmit;
     const personaData = {
       fechaNacimiento: fechaNacimiento,
       nombre: nombre,
       isCdf: Boolean(esCabezaFamilia),
       genero: genero.toUpperCase(),
+      ...(!esCabezaFamilia && { idCabezaFamilia: idCabezaFamilia }),
       ...(idVivienda && { idVivienda: Number(idVivienda) }),
       ...(modalidadOcupacion && { modalidadOcupacion: modalidadOcupacion }),
       ...(fechaInicioOcupacion && { fechaInicio: fechaInicioOcupacion }),
