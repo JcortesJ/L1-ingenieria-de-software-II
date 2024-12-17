@@ -2,7 +2,7 @@
 "use client";
 
 import { Button } from "./ui/button";
-import { Modal, ModalContent, ModalTrigger } from "./ui/modal";
+import { Modal, ModalContent, ModalTitle, ModalTrigger } from "./ui/modal";
 import { useEffect, useState, useMemo } from "react";
 import { Alert, AlertDescription } from "./ui/alert";
 
@@ -125,6 +125,7 @@ export function FormularioModal({
 
   return (
     <Modal open={isOpen} onOpenChange={setIsOpen}>
+      <ModalTitle>{title}</ModalTitle>
       <ModalTrigger asChild className={className}>
         <Button variant="outline">{name}</Button>
       </ModalTrigger>
