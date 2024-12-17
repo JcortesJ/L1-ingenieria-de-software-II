@@ -54,9 +54,14 @@ export const updateDireccionVivienda = async (
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const deleteVivienda = async (data: Record<string, any>) => {
-  const response = await fetch(`/api/viviendas/${data.idVivienda}`, {
-    method: "DELETE",
-    body: JSON.stringify(data),
-  });
-  return response.json();
+  try {
+    const response = await fetch(`/api/viviendas/${data.idVivienda}`, {
+      method: "DELETE",
+      body: JSON.stringify(data),
+    });
+    return { data: response, error: null };
+  } catch (err) {
+    console.error("Error al eliminar la vivienda: ", err);
+    return { data: null, error: "No se pudo eliminar la vivienda." };
+  }
 };
