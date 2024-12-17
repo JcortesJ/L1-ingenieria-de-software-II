@@ -81,7 +81,7 @@ const PersonaCard = ({
         </div>
         <Button
           className={`${
-            persona.id !== persona.id_cabeza_familia ? "hidden" : "block"
+            !persona.isCdf ? "hidden" : "block"
           } bg-green-500 font-bold mt-4 w-40`}
           onClick={() => setIsModalChangeResidencia(true)}
           variant="ghost"
