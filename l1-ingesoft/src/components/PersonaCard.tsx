@@ -49,6 +49,11 @@ const PersonaCard = ({
             {persona.nombre}
           </h2>
           <span className="truncate">Id: {persona.id}</span>
+          {persona.isCdf && (
+            <span className="truncate">
+              Id cabeza de familia: {persona.id_cabeza_familia}
+            </span>
+          )}
         </div>
 
         <div className="grid grid-cols-[auto,1fr] gap-3 text-sm">

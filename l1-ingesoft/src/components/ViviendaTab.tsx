@@ -6,7 +6,7 @@ import {
   fetchViviendas,
 } from "@/actions/vivienda";
 import { useState, useEffect, useCallback } from "react";
-import { ViviendaType } from "@/testdata/dataViviendas";
+import ViviendaType from "@/testdata/dataViviendas";
 import ViviendaCard from "./ViviendaCard";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { FormularioModal } from "./FormularioModal";

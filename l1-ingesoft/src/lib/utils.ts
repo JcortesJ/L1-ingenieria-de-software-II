@@ -1,6 +1,8 @@
 import { fetchPersonas } from "@/actions/personas";
+import ViviendaType from "@/testdata/dataViviendas";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { getViviendasVacias } from "@/actions/personas";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -35,22 +37,27 @@ const getAllCdf = async () => {
   );
   return allCdfs;
 };
-
-interface Vivienda {
-  id_vivienda: string;
-  direccion: string;
-}
-
-const getViviendasVacias = async (): Promise<
-  { value: string; label: string }[]
+const getViviendasVacias_ = async (): Promise<
+  { value: number; label: string }[]
 > => {
-  const response = await fetch("/api/viviendas/vacias");
-  const data = await response.json();
+  const { data, error } = await getViviendasVacias();
+  console.log("data", data);
+  if (error) {
+    console.error("Error al obtener las viviendas vacias:", error);
+  }
 
-  const vacias = data.map((vivienda: Vivienda) => ({
-    value: vivienda.id_vivienda,
-    label: vivienda.direccion,
-  }));
+  if (!data) {
+    console.error("No se recibió ningún dato para las viviendas vacias.");
+  }
+
+  const vacias = [] as { value: number; label: string }[];
+  data.forEach((vivienda: ViviendaType) =>
+    vacias.push({
+      value: vivienda.id_vivienda ?? 0,
+      label: vivienda.direccion ?? "",
+    })
+  );
+  console.log("vacias", vacias);
   return vacias;
 };
 
@@ -65,7 +72,7 @@ export const formatearFecha = (fecha: string) => {
 
 export async function getInputData(entityName: string) {
   const cdf = await getAllCdf();
-  const viviendasVacias = await getViviendasVacias();
+  const viviendasVacias = await getViviendasVacias_();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let data: any = [];
   if (entityName === "person") {

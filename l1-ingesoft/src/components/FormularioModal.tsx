@@ -26,13 +26,13 @@ interface FormularioModalProps {
   onSubmit: (data: Record<string, any>) => void;
 }
 
-export function FormularioModal({
+export const FormularioModal = ({
   className,
   title,
   name,
   onSubmit,
   inputs,
-}: FormularioModalProps) {
+}: FormularioModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const initialValues = useMemo(() => {
@@ -81,7 +81,7 @@ export function FormularioModal({
         }
       }
     }
-    //Validar que la fecha de nacimiento sea menor a la fecha actual
+    // Validar que la fecha de nacimiento sea menor a la fecha actual
     const fechaNacimiento = new Date(formValues["fechaNacimiento"]);
     const fechaActual = new Date();
     if (fechaNacimiento > fechaActual) {
@@ -213,4 +213,4 @@ export function FormularioModal({
       </ModalContent>
     </Modal>
   );
-}
+};
