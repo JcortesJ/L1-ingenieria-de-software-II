@@ -36,7 +36,7 @@ const formSchema = z.object({
   houses: z.enum(["all", "0", "1", "2", "3+"]),
   department: z.string().optional(),
   searchName: z.string().optional(),
-  isHeadOfFamily: z.boolean(),
+  isCdf: z.boolean(),
 });
 
 const aplicarFiltros = (
@@ -68,8 +68,7 @@ const aplicarFiltros = (
     )
       return false;
 
-    if (values.isHeadOfFamily && persona.id !== persona.id_cabeza_familia)
-      return false;
+    if (values.isCdf && !persona.isCdf) return false;
 
     return true;
   });
@@ -91,7 +90,7 @@ const PersonaTab = () => {
       houses: "all",
       department: "",
       searchName: "",
-      isHeadOfFamily: false,
+      isCdf: false,
     },
   });
 
@@ -141,7 +140,7 @@ const PersonaTab = () => {
   const houses = form.watch("houses");
   const department = form.watch("department");
   const searchName = form.watch("searchName");
-  const isHeadOfFamily = form.watch("isHeadOfFamily");
+  const isHeadOfFamily = form.watch("isCdf");
 
   useEffect(() => {
     if (!isLoading) {
@@ -272,7 +271,7 @@ const PersonaTab = () => {
 
             <FormField
               control={form.control}
-              name="isHeadOfFamily"
+              name="isCdf"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center gap-2">
                   <FormControl>
@@ -287,7 +286,7 @@ const PersonaTab = () => {
                 </FormItem>
               )}
             />
-            {!isInputsLoading && formInputs.length > 0 && (
+            {!isInputsLoading && formInputs.length > 0 ? (
               <FormularioModal
                 className="w-full md:w-[180px] bg-[#658567] border-none hover:bg-[#658567]/90 hover:text-white"
                 name="Crear Persona"
@@ -295,6 +294,8 @@ const PersonaTab = () => {
                 inputs={formInputs}
                 onSubmit={handleSubmit}
               />
+            ) : (
+              <Skeleton className="h-10 w-100vw" />
             )}
           </div>
         </form>

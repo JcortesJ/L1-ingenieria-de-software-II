@@ -13,26 +13,26 @@ export function cn(...inputs: ClassValue[]) {
 const getAllCdf = async () => {
   const response = await fetchPersonas();
   const { data } = response;
-  let allCdfs: any[] = [];
+  const allCdfs: { value: string; label: string }[] = [];
   if (!data || !Array.isArray(data)) {
     console.error("No hay datos de personas o el formato es incorrecto");
     return [];
   }
-  console.log("length de data es: ", data.length);
   data.forEach(
-    (persona: { id: number; id_cabeza_familia: number; nombre: string }) => {
-      if (persona && persona.id === persona.id_cabeza_familia) {
+    (persona: {
+      id: number;
+      id_cabeza_familia: number;
+      nombre: string;
+      isCdf: boolean;
+    }) => {
+      if (persona && persona.isCdf) {
         allCdfs.push({
           value: persona.id_cabeza_familia.toString(),
           label: persona.nombre ?? "",
         });
-      } else {
-        console.log("no encontre nada");
       }
     }
   );
-
-  console.log("cdfs es: ", allCdfs);
   return allCdfs;
 };
 
