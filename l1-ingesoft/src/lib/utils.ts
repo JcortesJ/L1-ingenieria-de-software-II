@@ -1,9 +1,40 @@
+import { fetchPersonas } from "@/actions/personas";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+// El array cdf puede estar vacío por varias razones:
+// 1. La respuesta de fetchPersonas() podría estar vacía o ser null
+// 2. Ninguna persona en los datos cumple la condición de ser cabeza de familia (id === id_cabeza_familia)
+// 3. Los datos podrían tener un formato incorrecto
+const getAllCdf = async () => {
+  const response = await fetchPersonas();
+  const { data } = response;
+  let allCdfs: any[] = [];
+  if (!data || !Array.isArray(data)) {
+    console.error("No hay datos de personas o el formato es incorrecto");
+    return [];
+  }
+  console.log("length de data es: ", data.length);
+  data.forEach(
+    (persona: { id: number; id_cabeza_familia: number; nombre: string }) => {
+      if (persona && persona.id === persona.id_cabeza_familia) {
+        allCdfs.push({
+          value: persona.id_cabeza_familia.toString(),
+          label: persona.nombre ?? "",
+        });
+      } else {
+        console.log("no encontre nada");
+      }
+    }
+  );
+
+  console.log("cdfs es: ", allCdfs);
+  return allCdfs;
+};
 
 export const formatearFecha = (fecha: string) => {
   const fechaObj = new Date(fecha); // Convierte la cadena en un objeto Date
@@ -14,7 +45,8 @@ export const formatearFecha = (fecha: string) => {
   });
 };
 
-export function getInputData(entityName: string) {
+export async function getInputData(entityName: string) {
+  const cdf = await getAllCdf();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let data: any = [];
   if (entityName === "person") {
@@ -58,11 +90,12 @@ export function getInputData(entityName: string) {
       },
       {
         label: "¿Quien es su cabeza de familia?",
-        type: "text",
-        placeholder: "Ej: 1234567890",
+        type: "select",
+        placeholder: "Seleccione el cabeza de familia",
         id: "idCabezaFamilia",
         defaultValue: "",
         required: true,
+        options: cdf,
         dependsFrom: {
           field: "esCabezaFamilia",
           value: false,
@@ -209,11 +242,12 @@ export function getInputData(entityName: string) {
       },
       {
         label: "Ingrese el identificador del cabeza de familia",
-        type: "text",
-        placeholder: "Ej: 1234567890",
+        type: "select",
+        placeholder: "Seleccione el cabeza de familia",
         id: "idCabezaFamilia",
         defaultValue: "",
         required: true,
+        options: cdf,
       },
       {
         label: "Ingrese la fecha de inicio de la ocupación",

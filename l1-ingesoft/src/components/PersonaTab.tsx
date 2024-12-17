@@ -82,6 +82,8 @@ const PersonaTab = () => {
   const [personas, setPersonas] = useState<PersonaType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [formInputs, setFormInputs] = useState([]);
+  const [isInputsLoading, setIsInputsLoading] = useState(true);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -108,6 +110,16 @@ const PersonaTab = () => {
       setIsLoading(false);
     };
     loadData();
+  }, []);
+
+  useEffect(() => {
+    const loadInputs = async () => {
+      setIsInputsLoading(true);
+      const inputs = await getInputData("person");
+      setFormInputs(inputs);
+      setIsInputsLoading(false);
+    };
+    loadInputs();
   }, []);
 
   const applyFilters = useCallback(
@@ -275,13 +287,15 @@ const PersonaTab = () => {
                 </FormItem>
               )}
             />
-            <FormularioModal
-              className="w-full md:w-[180px] bg-[#658567] border-none hover:bg-[#658567]/90 hover:text-white"
-              name="Crear Persona"
-              title="Por favor ingrese los datos de la persona"
-              inputs={getInputData("person")}
-              onSubmit={handleSubmit}
-            />
+            {!isInputsLoading && formInputs.length > 0 && (
+              <FormularioModal
+                className="w-full md:w-[180px] bg-[#658567] border-none hover:bg-[#658567]/90 hover:text-white"
+                name="Crear Persona"
+                title="Por favor ingrese los datos de la persona"
+                inputs={formInputs}
+                onSubmit={handleSubmit}
+              />
+            )}
           </div>
         </form>
       </Form>

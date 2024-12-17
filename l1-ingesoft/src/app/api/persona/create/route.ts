@@ -17,6 +17,13 @@ export async function POST(request: NextRequest) {
             fechaFin
         } = await request.json();
 
+        if (!isCdf && idCdf == undefined) {
+            return Response.json(
+                { message: 'Debe asociarle un cabeza de familia a la persona' },
+                { status: 500 }
+            );
+        }
+
         if (idVivienda) {
             if (!fechaInicio || !modalidadOcupacion) {
                 return Response.json(
@@ -91,8 +98,6 @@ export async function POST(request: NextRequest) {
             });
 
         }
-
-
 
         return Response.json(
             { message: 'Persona y CDF creados correctamente', data: newPersona },
