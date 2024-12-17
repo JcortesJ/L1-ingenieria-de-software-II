@@ -136,24 +136,25 @@ const ViviendaTab = () => {
       fechaInicio: fechaInicioOcupacion,
       modalidadOcupacion: modalidadOcupacion,
     };
-    const { error } = await deleteVivienda(viviendaData);
+    const { error } = await createRegistroResidencial(
+      Number(idCabezaFamilia),
+      Number(idViviendaTransfer),
+      modalidadOcupacion,
+      fechaInicioOcupacion,
+      ""
+    );
+
     if (error) {
       toast({
-        title: "Error al eliminar la vivienda",
+        title: "Error al crear el registro residencial",
         description: error,
         variant: "destructive",
       });
     } else {
-      const { error } = await createRegistroResidencial(
-        Number(idCabezaFamilia),
-        Number(idViviendaTransfer),
-        modalidadOcupacion,
-        fechaInicioOcupacion,
-        ""
-      );
+      const { error } = await deleteVivienda(viviendaData);
       if (error) {
         toast({
-          title: "Error al crear el registro residencial",
+          title: "Error al eliminar la vivienda",
           description: error,
           variant: "destructive",
         });
@@ -163,6 +164,12 @@ const ViviendaTab = () => {
             "Vivienda eliminada correctamente, verifique el registro residencial",
           variant: "default",
         });
+        setViviendas((prevViviendas) =>
+          prevViviendas.filter((v) => v.id_vivienda !== idViviendaDelete)
+        );
+        setFilteredViviendas((prevViviendas) =>
+          prevViviendas.filter((v) => v.id_vivienda !== idViviendaDelete)
+        );
       }
     }
   }
