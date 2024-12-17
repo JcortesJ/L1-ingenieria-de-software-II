@@ -208,15 +208,6 @@ export function FormularioModal({
               >
                 Enviar
               </Button>
-              <Button
-                variant="destructive"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setFormValues(initialValues);
-                }}
-              >
-                Borrar
-              </Button>
             </section>
           </form>
         </div>
