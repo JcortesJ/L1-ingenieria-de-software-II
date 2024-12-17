@@ -20,9 +20,10 @@ const MunicipioCard = ({ municipio, onCambiarAlcalde }: MunicipioCardProps) => {
       <CardContent>
         <div className="space-y-2">
           <p className="flex flex-col items-start gap-2">
-            <Building2 className="h-4 w-4 text-gray-500" />
+            
             <span className="text-sm text-gray-600">Identificador:</span>
             <span className="font-medium">{municipio.id_municipio}</span>
+            <Building2 className="h-4 w-4 text-gray-500" />
             <span className="text-sm text-gray-600">Departamento:</span>
             <span className="font-medium">{municipio.departamento}</span>
           </p>
