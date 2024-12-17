@@ -83,7 +83,7 @@ const PersonaCard = ({
         </div>
         <Button
           className={`${
-            persona.id == persona.id_cabeza_familia ? "hidden" : "block"
+            persona.id !== persona.id_cabeza_familia ? "hidden" : "block"
           } bg-green-500 font-bold mt-4 w-40`}
           onClick={() => setIsModalChangeResidencia(true)}
           variant="ghost"
@@ -93,7 +93,7 @@ const PersonaCard = ({
         </Button>
         <Button
           className={`${
-            persona.id == persona.id_cabeza_familia ? "hidden" : "block"
+            persona.id !== persona.id_cabeza_familia ? "hidden" : "block"
           } bg-blue-500 font-bold mt-4 w-40`}
           onClick={() => setIsModalFamilia(true)}
           variant="ghost"

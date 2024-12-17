@@ -69,7 +69,7 @@ export function getInputData(entityName: string) {
         },
       },
       {
-        label: "¿Posee una vivienda?",
+        label: "Habita una vivienda?",
         type: "checkbox",
         placeholder: "Posee una vivienda",
         id: "poseeVivienda",
