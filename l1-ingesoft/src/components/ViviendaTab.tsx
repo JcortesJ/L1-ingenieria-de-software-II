@@ -138,7 +138,11 @@ const ViviendaTab = () => {
     };
     const { error } = await deleteVivienda(viviendaData);
     if (error) {
-      setError(error);
+      toast({
+        title: "Error al eliminar la vivienda",
+        description: error,
+        variant: "destructive",
+      });
     } else {
       const { error } = await createRegistroResidencial(
         Number(idCabezaFamilia),
@@ -149,13 +153,14 @@ const ViviendaTab = () => {
       );
       if (error) {
         toast({
-          title: "Error al eliminar la vivienda",
+          title: "Error al crear el registro residencial",
           description: error,
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Vivienda eliminada correctamente",
+          title:
+            "Vivienda eliminada correctamente, verifique el registro residencial",
           variant: "default",
         });
       }

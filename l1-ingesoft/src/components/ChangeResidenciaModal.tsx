@@ -1,17 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { PersonaType } from "@/testdata/dataPersona";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "./ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from "@/hooks/use-toast";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { createRegistroResidencial } from '@/actions/registroresidencial';
-import { getViviendasVacias } from '@/actions/personas';
-import { ViviendaType } from '@/testdata/dataViviendas';
-
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { createRegistroResidencial } from "@/actions/registroresidencial";
+import { getViviendasVacias } from "@/actions/personas";
+import { ViviendaType } from "@/testdata/dataViviendas";
 
 interface ChangeResidenciaModalProps {
   isOpen: boolean;
@@ -19,12 +29,17 @@ interface ChangeResidenciaModalProps {
   persona: PersonaType;
 }
 
-export const ChangeResidenciaModal = ({ isOpen, onClose, persona }: ChangeResidenciaModalProps) => {
+export const ChangeResidenciaModal = ({
+  isOpen,
+  onClose,
+  persona,
+}: ChangeResidenciaModalProps) => {
   const [viviendasVacias, setViviendasVacias] = useState<ViviendaType[]>([]);
-  const [selectedVivienda, setSelectedVivienda] = useState<string>('');
-  const [modalidadOcupacion, setModalidadOcupacion] = useState<string>('ARRIENDO');
-  const [fechaInicio, setFechaInicio] = useState<string>('');
-  const [fechaFin, setFechaFin] = useState<string>('');
+  const [selectedVivienda, setSelectedVivienda] = useState<string>("");
+  const [modalidadOcupacion, setModalidadOcupacion] =
+    useState<string>("ARRIENDO");
+  const [fechaInicio, setFechaInicio] = useState<string>("");
+  const [fechaFin, setFechaFin] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -41,7 +56,7 @@ export const ChangeResidenciaModal = ({ isOpen, onClose, persona }: ChangeReside
         setViviendasVacias(data);
       }
     };
-  
+
     if (isOpen) {
       fetchViviendasVacias();
     }
@@ -52,7 +67,13 @@ export const ChangeResidenciaModal = ({ isOpen, onClose, persona }: ChangeReside
     setIsLoading(true);
 
     try {
-      await createRegistroResidencial(persona.id_cabeza_familia,parseInt(selectedVivienda) , modalidadOcupacion, fechaInicio, fechaFin)
+      await createRegistroResidencial(
+        persona.id_cabeza_familia,
+        parseInt(selectedVivienda),
+        modalidadOcupacion,
+        fechaInicio,
+        fechaFin
+      );
       toast({
         title: "Actualización exitosa",
         description: "La residencia de la persona ha sido actualizada.",
@@ -75,7 +96,9 @@ export const ChangeResidenciaModal = ({ isOpen, onClose, persona }: ChangeReside
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Cambie donde habita la familia de {persona.nombre}</DialogTitle>
+          <DialogTitle>
+            Cambie donde habita la familia de {persona.nombre}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
@@ -83,13 +106,19 @@ export const ChangeResidenciaModal = ({ isOpen, onClose, persona }: ChangeReside
               <Label htmlFor="vivienda" className="text-right">
                 Nueva Vivienda
               </Label>
-              <Select value={selectedVivienda} onValueChange={setSelectedVivienda}>
-                <SelectTrigger id='vivienda' className="col-span-3 bg-gray-200">
+              <Select
+                value={selectedVivienda}
+                onValueChange={setSelectedVivienda}
+              >
+                <SelectTrigger id="vivienda" className="col-span-3 bg-gray-200">
                   <SelectValue placeholder="Seleccione una vivienda" />
                 </SelectTrigger>
                 <SelectContent>
                   {viviendasVacias.map((vivienda) => (
-                    <SelectItem key={vivienda.id_vivienda} value={vivienda.id_vivienda.toString()}>
+                    <SelectItem
+                      key={vivienda.id_vivienda}
+                      value={vivienda.id_vivienda.toString()}
+                    >
                       {vivienda.direccion}
                     </SelectItem>
                   ))}
@@ -100,8 +129,14 @@ export const ChangeResidenciaModal = ({ isOpen, onClose, persona }: ChangeReside
               <Label htmlFor="modalidadOcupacion" className="text-right">
                 Modalidad de Ocupación
               </Label>
-              <Select value={modalidadOcupacion} onValueChange={setModalidadOcupacion}>
-                <SelectTrigger id='modalidadOcupacion' className="col-span-3 bg-gray-200">
+              <Select
+                value={modalidadOcupacion}
+                onValueChange={setModalidadOcupacion}
+              >
+                <SelectTrigger
+                  id="modalidadOcupacion"
+                  className="col-span-3 bg-gray-200"
+                >
                   <SelectValue placeholder="Seleccione modalidad" />
                 </SelectTrigger>
                 <SelectContent>
@@ -138,7 +173,10 @@ export const ChangeResidenciaModal = ({ isOpen, onClose, persona }: ChangeReside
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={isLoading || !selectedVivienda || !fechaInicio}>
+            <Button
+              type="submit"
+              disabled={isLoading || !selectedVivienda || !fechaInicio}
+            >
               {isLoading ? "Actualizando..." : "Actualizar Residencia"}
             </Button>
           </DialogFooter>
@@ -147,4 +185,3 @@ export const ChangeResidenciaModal = ({ isOpen, onClose, persona }: ChangeReside
     </Dialog>
   );
 };
-

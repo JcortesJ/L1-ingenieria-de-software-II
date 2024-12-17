@@ -36,6 +36,24 @@ const getAllCdf = async () => {
   return allCdfs;
 };
 
+interface Vivienda {
+  id_vivienda: string;
+  direccion: string;
+}
+
+const getViviendasVacias = async (): Promise<
+  { value: string; label: string }[]
+> => {
+  const response = await fetch("/api/viviendas/vacias");
+  const data = await response.json();
+
+  const vacias = data.map((vivienda: Vivienda) => ({
+    value: vivienda.id_vivienda,
+    label: vivienda.direccion,
+  }));
+  return vacias;
+};
+
 export const formatearFecha = (fecha: string) => {
   const fechaObj = new Date(fecha); // Convierte la cadena en un objeto Date
   return fechaObj.toLocaleDateString("es-ES", {
@@ -47,6 +65,7 @@ export const formatearFecha = (fecha: string) => {
 
 export async function getInputData(entityName: string) {
   const cdf = await getAllCdf();
+  const viviendasVacias = await getViviendasVacias();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let data: any = [];
   if (entityName === "person") {
@@ -234,11 +253,12 @@ export async function getInputData(entityName: string) {
       {
         label:
           "Ingrese el identificador de la vivienda a la que se trasladarán los habitantes",
-        type: "text",
-        placeholder: "Ej: 1234567890",
+        type: "select",
+        placeholder: "Seleccione la vivienda",
         id: "idViviendaTransfer",
         defaultValue: "",
         required: true,
+        options: viviendasVacias,
       },
       {
         label: "Ingrese el identificador del cabeza de familia",
