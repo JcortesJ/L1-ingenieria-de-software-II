@@ -1,12 +1,18 @@
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "./ui/dialog";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from "@/hooks/use-toast";
 
-import { ViviendaType } from '@/testdata/dataViviendas';
-import { updateDireccionVivienda } from '@/actions/vivienda';
+import ViviendaType from "@/testdata/dataViviendas";
+import { updateDireccionVivienda } from "@/actions/vivienda";
 
 interface EditViviendaModalProps {
   isOpen: boolean;
@@ -15,7 +21,12 @@ interface EditViviendaModalProps {
   onUpdate: (updatedVivienda: ViviendaType) => void;
 }
 
-export const EditViviendaModal = ({ isOpen, onClose, vivienda, onUpdate }: EditViviendaModalProps) => {
+export const EditViviendaModal = ({
+  isOpen,
+  onClose,
+  vivienda,
+  onUpdate,
+}: EditViviendaModalProps) => {
   const [direccion, setDireccion] = useState(vivienda.direccion);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -26,7 +37,7 @@ export const EditViviendaModal = ({ isOpen, onClose, vivienda, onUpdate }: EditV
 
     try {
       await updateDireccionVivienda(vivienda.id_vivienda, { direccion });
-      onUpdate({...vivienda, direccion});
+      onUpdate({ ...vivienda, direccion });
       toast({
         title: "Actualización exitosa",
         description: "Los datos de la vivienda han sido actualizados.",
@@ -75,4 +86,3 @@ export const EditViviendaModal = ({ isOpen, onClose, vivienda, onUpdate }: EditV
     </Dialog>
   );
 };
-

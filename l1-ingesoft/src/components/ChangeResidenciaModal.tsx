@@ -21,7 +21,7 @@ import {
 } from "./ui/select";
 import { createRegistroResidencial } from "@/actions/registroresidencial";
 import { getViviendasVacias } from "@/actions/personas";
-import { ViviendaType } from "@/testdata/dataViviendas";
+import ViviendaType from "@/testdata/dataViviendas";
 
 interface ChangeResidenciaModalProps {
   isOpen: boolean;

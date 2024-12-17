@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-import { ViviendaType } from "@/testdata/dataViviendas";
+import ViviendaType from "@/testdata/dataViviendas";
 import { EditViviendaModal } from "./EditViviendaModal";
 
 const ViviendaCard = ({
