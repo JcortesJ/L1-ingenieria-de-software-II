@@ -47,7 +47,8 @@ export async function GET() {
       genero: person.genero,
       departamento: person.cdf?.registro[0]?.vivienda.municipio.departamento.nombre,
       municipio: person.cdf?.registro[0]?.vivienda.municipio.nombre,
-      numCasas: person.Posee?.length
+      numCasas: person.Posee?.length,
+      isCdf: person.id === person?.cdf?.id_persona 
 
     }))
 

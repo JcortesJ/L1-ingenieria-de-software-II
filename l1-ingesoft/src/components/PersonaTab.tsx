@@ -36,7 +36,7 @@ const formSchema = z.object({
   houses: z.enum(["all", "0", "1", "2", "3+"]),
   department: z.string().optional(),
   searchName: z.string().optional(),
-  isHeadOfFamily: z.boolean(),
+  isCdf: z.boolean(),
 });
 
 const aplicarFiltros = (
@@ -68,8 +68,7 @@ const aplicarFiltros = (
     )
       return false;
 
-    if (values.isHeadOfFamily && persona.id !== persona.id_cabeza_familia)
-      return false;
+    if (values.isCdf && !persona.isCdf) return false;
 
     return true;
   });
@@ -82,6 +81,8 @@ const PersonaTab = () => {
   const [personas, setPersonas] = useState<PersonaType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [formInputs, setFormInputs] = useState([]);
+  const [isInputsLoading, setIsInputsLoading] = useState(true);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -89,7 +90,7 @@ const PersonaTab = () => {
       houses: "all",
       department: "",
       searchName: "",
-      isHeadOfFamily: false,
+      isCdf: false,
     },
   });
 
@@ -108,6 +109,16 @@ const PersonaTab = () => {
       setIsLoading(false);
     };
     loadData();
+  }, []);
+
+  useEffect(() => {
+    const loadInputs = async () => {
+      setIsInputsLoading(true);
+      const inputs = await getInputData("person");
+      setFormInputs(inputs);
+      setIsInputsLoading(false);
+    };
+    loadInputs();
   }, []);
 
   const applyFilters = useCallback(
@@ -129,7 +140,7 @@ const PersonaTab = () => {
   const houses = form.watch("houses");
   const department = form.watch("department");
   const searchName = form.watch("searchName");
-  const isHeadOfFamily = form.watch("isHeadOfFamily");
+  const isHeadOfFamily = form.watch("isCdf");
 
   useEffect(() => {
     if (!isLoading) {
@@ -260,7 +271,7 @@ const PersonaTab = () => {
 
             <FormField
               control={form.control}
-              name="isHeadOfFamily"
+              name="isCdf"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center gap-2">
                   <FormControl>
@@ -275,13 +286,17 @@ const PersonaTab = () => {
                 </FormItem>
               )}
             />
-            <FormularioModal
-              className="w-full md:w-[180px] bg-[#658567] border-none hover:bg-[#658567]/90 hover:text-white"
-              name="Crear Persona"
-              title="Por favor ingrese los datos de la persona"
-              inputs={getInputData("person")}
-              onSubmit={handleSubmit}
-            />
+            {!isInputsLoading && formInputs.length > 0 ? (
+              <FormularioModal
+                className="w-full md:w-[180px] bg-[#658567] border-none hover:bg-[#658567]/90 hover:text-white"
+                name="Crear Persona"
+                title="Por favor ingrese los datos de la persona"
+                inputs={formInputs}
+                onSubmit={handleSubmit}
+              />
+            ) : (
+              <Skeleton className="h-10 w-100vw" />
+            )}
           </div>
         </form>
       </Form>

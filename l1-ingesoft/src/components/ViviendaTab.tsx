@@ -13,6 +13,7 @@ import { FormularioModal } from "./FormularioModal";
 import { getInputData } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { createRegistroResidencial } from "@/actions/registroresidencial";
+import { Button } from "./ui/button";
 
 const ViviendaTab = () => {
   const [viviendas, setViviendas] = useState<ViviendaType[]>([]);
@@ -22,6 +23,9 @@ const ViviendaTab = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [nombreFilter, setNombreFilter] = useState("");
+  const [formInputs, setFormInputs] = useState([]);
+  const [deleteInputs, setDeleteInputs] = useState([]);
+  const [isInputsLoading, setIsInputsLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
@@ -40,6 +44,19 @@ const ViviendaTab = () => {
 
     loadData();
   }, []);
+
+  useEffect(() => {
+    const loadInputs = async () => {
+      setIsInputsLoading(true);
+      const viviendaInputs = await getInputData("vivienda");
+      const deleteInputs = await getInputData("delete");
+      setFormInputs(viviendaInputs);
+      setDeleteInputs(deleteInputs);
+      setIsInputsLoading(false);
+    };
+    loadInputs();
+  }, []);
+
   const filters = () => {
     if (!loading) {
       const filtered = viviendas.filter((vivienda) =>
@@ -148,20 +165,28 @@ const ViviendaTab = () => {
             value={nombreFilter}
             onChange={(e) => setNombreFilter(e.target.value)}
           />
-          <FormularioModal
-            className="w-full md:w-[180px] bg-gray-200"
-            title="Agregar Vivienda"
-            name="Agregar Vivienda"
-            inputs={getInputData("vivienda")}
-            onSubmit={handleSubmit}
-          />
-          <FormularioModal
-            className="w-full md:w-[180px] bg-destructive border-none hover:bg-destructive/90 hover:text-white"
-            title="Para eliminar, reubica los habitantes a otra vivienda en caso de que esta tenga habitantes."
-            name="Eliminar Vivienda"
-            inputs={getInputData("delete")}
-            onSubmit={handleDelete}
-          />
+          {!isInputsLoading && formInputs.length > 0 ? (
+            <FormularioModal
+              className="w-full md:w-[180px] bg-gray-200"
+              title="Agregar Vivienda"
+              name="Agregar Vivienda"
+              inputs={formInputs}
+              onSubmit={handleSubmit}
+            />
+          ) : (
+            <Button className="w-full md:w-[180px] bg-gray-200 text-black">
+              Cargando...
+            </Button>
+          )}
+          {!isInputsLoading && deleteInputs.length > 0 ? (
+            <FormularioModal
+              className="w-full md:w-[180px] bg-destructive border-none hover:bg-destructive/90 hover:text-white"
+              title="Para eliminar, reubica los habitantes a otra vivienda en caso de que esta tenga habitantes."
+              name="Eliminar Vivienda"
+              inputs={deleteInputs}
+              onSubmit={handleDelete}
+            />
+          ) : null}
         </section>
       </div>
 

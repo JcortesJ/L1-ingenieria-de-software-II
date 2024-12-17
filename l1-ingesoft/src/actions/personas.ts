@@ -58,22 +58,22 @@ export const updatePersona = async (id: number, data: UpdatePersonaData) => {
 
 export async function getViviendasVacias() {
   try {
-    const response = await fetch('/api/viviendas/disponibles', {
-      method: 'GET',
+    const response = await fetch("/api/viviendas/disponibles", {
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || 'Error al obtener viviendas vacías');
+      throw new Error(errorData.message || "Error al obtener viviendas vacías");
     }
 
     const data = await response.json();
     return { data, error: null };
   } catch (error) {
-    console.error('Error fetching empty houses:', error);
+    console.error("Error fetching empty houses:", error);
     return { data: null, error: (error as Error).message };
   }
 }
@@ -93,4 +93,12 @@ export const fetchMiembrosFamilia = async (id: number) => {
     console.error("Error en la consulta API: ", err);
     return { data: null, error: "No se pudo cargar los datos ." };
   }
+};
+
+export const getCdf = async (id: number) => {
+  const response = await fetch(`/api/cdf/${id}`, {
+    method: "GET",
+  });
+  const data = await response.json();
+  return { data, error: null };
 };

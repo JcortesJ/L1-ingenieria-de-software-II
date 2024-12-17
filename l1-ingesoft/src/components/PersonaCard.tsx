@@ -55,9 +55,7 @@ const PersonaCard = ({
           <House className="w-5 h-5 text-muted-foreground" />
 
           <span className="truncate" title={"cabeza de familia"}>
-            {persona.id == persona.id_cabeza_familia
-              ? "Es cabeza de familia"
-              : "No es cabeza de familia"}
+            {persona.isCdf ? "Es cabeza de familia" : "No es cabeza de familia"}
           </span>
           <Calendar className="w-5 h-5 text-muted-foreground" />
           <span>{formatearFecha(persona.fecha_nacimiento)}</span>

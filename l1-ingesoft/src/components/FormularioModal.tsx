@@ -125,13 +125,12 @@ export function FormularioModal({
 
   return (
     <Modal open={isOpen} onOpenChange={setIsOpen}>
-      <ModalTitle>{title}</ModalTitle>
       <ModalTrigger asChild className={className}>
         <Button variant="outline">{name}</Button>
       </ModalTrigger>
       <ModalContent className="max-h-[90vh] overflow-y-auto max-w-[90vw] sm:max-w-[50vw]">
         <div className="grid gap-4">
-          <h2 className="text-lg font-bold">{title}</h2>
+          <ModalTitle>{title}</ModalTitle>
           <p className="text-sm text-gray-500">
             Todos los campos con * son obligatorios
           </p>
@@ -207,15 +206,6 @@ export function FormularioModal({
                 }}
               >
                 Enviar
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setFormValues(initialValues);
-                }}
-              >
-                Borrar
               </Button>
             </section>
           </form>
