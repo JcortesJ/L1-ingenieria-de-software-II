@@ -5,6 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const formatearFecha = (fecha: string) => {
+  const fechaObj = new Date(fecha); // Convierte la cadena en un objeto Date
+  return fechaObj.toLocaleDateString("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
+
 export function getInputData(entityName: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let data: any = [];
@@ -27,12 +36,17 @@ export function getInputData(entityName: string) {
         required: true,
       },
       {
-        label: "¿Está vivo?",
-        type: "checkbox",
-        placeholder: "Está vivo",
-        id: "vivo",
-        defaultValue: true,
+        label: "Genero",
+        type: "select",
+        placeholder: "Seleccione el genero",
+        id: "genero",
+        defaultValue: "",
         required: true,
+        options: [
+          { value: "masculino", label: "Masculino" },
+          { value: "femenino", label: "Femenino" },
+          { value: "no_binario", label: "Otro" },
+        ],
       },
       {
         label: "¿Es cabeza de familia?",
@@ -55,11 +69,11 @@ export function getInputData(entityName: string) {
         },
       },
       {
-        label: "Ingrese el identificador de la vivienda",
-        type: "text",
-        placeholder: "Ej: 1234567890",
-        id: "idVivienda",
-        defaultValue: "",
+        label: "Habita una vivienda?",
+        type: "checkbox",
+        placeholder: "Posee una vivienda",
+        id: "poseeVivienda",
+        defaultValue: false,
         required: true,
         dependsFrom: {
           field: "esCabezaFamilia",
@@ -67,14 +81,31 @@ export function getInputData(entityName: string) {
         },
       },
       {
-        label: "Ingrese la modalidad de la ocupación",
+        label: "Ingrese el identificador de la vivienda",
         type: "text",
-        placeholder: "Ej: Propiedad, Arriendo, etc",
-        id: "modalidadOcupacion",
+        placeholder: "Ej: 1234567890",
+        id: "idVivienda",
         defaultValue: "",
         required: true,
         dependsFrom: {
-          field: "esCabezaFamilia",
+          field: "poseeVivienda",
+          value: true,
+        },
+      },
+      {
+        label: "Ingrese la modalidad de la ocupación",
+        type: "select",
+        placeholder: "Seleccione la modalidad de la ocupación",
+        id: "modalidadOcupacion",
+        defaultValue: "",
+        required: true,
+        options: [
+          { value: "propiedad", label: "Propiedad" },
+          { value: "arriendo", label: "Arriendo" },
+          { value: "otro", label: "Otro" },
+        ],
+        dependsFrom: {
+          field: "poseeVivienda",
           value: true,
         },
       },
@@ -86,7 +117,7 @@ export function getInputData(entityName: string) {
         defaultValue: "",
         required: true,
         dependsFrom: {
-          field: "esCabezaFamilia",
+          field: "poseeVivienda",
           value: true,
         },
       },
@@ -96,9 +127,9 @@ export function getInputData(entityName: string) {
         placeholder: "Ingrese la fecha de fin de la ocupación",
         id: "fechaFinOcupacion",
         defaultValue: "",
-        required: true,
+        required: false,
         dependsFrom: {
-          field: "esCabezaFamilia",
+          field: "poseeVivienda",
           value: true,
         },
       },
@@ -110,31 +141,7 @@ export function getInputData(entityName: string) {
         defaultValue: true,
         required: true,
         dependsFrom: {
-          field: "esCabezaFamilia",
-          value: true,
-        },
-      },
-      {
-        label: "¿Tiene una vivienda?",
-        type: "checkbox",
-        placeholder: "Tiene una vivienda",
-        id: "tieneVivienda",
-        defaultValue: false,
-        required: false,
-        dependsFrom: {
-          field: "esCabezaFamilia",
-          value: false,
-        },
-      },
-      {
-        label: "Ingrese el identificador de la vivienda",
-        type: "text",
-        placeholder: "Ej: 1234567890",
-        id: "idVivienda",
-        defaultValue: "",
-        required: true,
-        dependsFrom: {
-          field: "tieneVivienda",
+          field: "poseeVivienda",
           value: true,
         },
       },
@@ -144,11 +151,16 @@ export function getInputData(entityName: string) {
     data = [
       {
         label: "Tipo de vivienda",
-        type: "text",
-        placeholder: "Ej: Casa, Apartamento, etc",
+        type: "select",
+        placeholder: "Seleccione el tipo de vivienda",
         id: "tipoVivienda",
         defaultValue: "",
         required: true,
+        options: [
+          { value: "casa", label: "Casa" },
+          { value: "apartamento", label: "Apartamento" },
+          { value: "conjunto", label: "Conjunto" },
+        ],
       },
       {
         label: "Dirección",
@@ -166,17 +178,63 @@ export function getInputData(entityName: string) {
         defaultValue: "",
         required: true,
       },
+      {
+        label: "Ingrese el identificador de la persona",
+        type: "text",
+        placeholder: "Ej: 1234567890",
+        id: "idPersona",
+        defaultValue: "",
+        required: true,
+      },
     ];
   }
   if (entityName === "delete") {
     data = [
       {
-        label: "Ingrese el identificador de la vivienda",
+        label: "Ingrese el identificador de la vivienda a eliminar",
         type: "text",
         placeholder: "Ej: 1234567890",
-        id: "idVivienda",
+        id: "idViviendaDelete",
         defaultValue: "",
         required: true,
+      },
+      {
+        label:
+          "Ingrese el identificador de la vivienda a la que se trasladarán los habitantes",
+        type: "text",
+        placeholder: "Ej: 1234567890",
+        id: "idViviendaTransfer",
+        defaultValue: "",
+        required: true,
+      },
+      {
+        label: "Ingrese el identificador del cabeza de familia",
+        type: "text",
+        placeholder: "Ej: 1234567890",
+        id: "idCabezaFamilia",
+        defaultValue: "",
+        required: true,
+      },
+      {
+        label: "Ingrese la fecha de inicio de la ocupación",
+        type: "date",
+        placeholder: "Ingrese la fecha de inicio de la ocupación",
+        id: "fechaInicioOcupacion",
+        defaultValue: "",
+        required: true,
+      },
+      {
+        label: "Ingrese la modalidad de la ocupación",
+        type: "select",
+        placeholder: "Seleccione la modalidad de la ocupación",
+        id: "modalidadOcupacion",
+        defaultValue: "",
+        required: true,
+        options: [
+          { value: "propiedad", label: "Propiedad" },
+          { value: "arriendo", label: "Arriendo" },
+          { value: "otro", label: "Otro" },
+        ],
       },
     ];
   }

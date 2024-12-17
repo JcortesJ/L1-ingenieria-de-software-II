@@ -32,6 +32,7 @@ model Vivienda {
   id           Int                    @id @default(autoincrement())
   direccion    String                 @db.VarChar(200)
   tipo         String                 @db.VarChar(200)
+  existe       Boolean                @default(true)
   personaPosee Persona[]              @relation("PersonaPosee")
   registro     Registro_residencial[]
   municipio    Municipio              @relation(fields: [id_municipio], references: [id])
@@ -71,9 +72,9 @@ model Registro_residencial {
   fecha_inicio        DateTime
   fecha_fin           DateTime?
   registro            Cdf       @relation(fields: [id_cdf], references: [id])
-  id_cdf              Int       
+  id_cdf              Int
   vivienda            Vivienda  @relation(fields: [id_vivienda], references: [id])
-  id_vivienda         Int       
+  id_vivienda         Int
   es_vigente          Boolean
 }
 

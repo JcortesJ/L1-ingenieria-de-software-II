@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 export default function Home() {
-  console.log("Hola mundo")
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#C1C8C1] p-8">
       {/* Hero Section: seccion principal de la pagina */}

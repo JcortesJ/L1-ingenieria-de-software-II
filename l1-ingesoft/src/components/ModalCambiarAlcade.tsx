@@ -30,9 +30,7 @@ export const ModalCambiarAlcalde = ({
     setPersonasElegibles(filteredPersonas)
   }, [personas, municipio])
 
-  useEffect(() => {
-    console.log("Modal isOpen:", isOpen);
-  }, [isOpen]);
+  
 
   const handleCambiarAlcalde = () => {
     if (selectedPersonaId) {

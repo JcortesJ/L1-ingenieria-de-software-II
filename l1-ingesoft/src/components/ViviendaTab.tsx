@@ -1,75 +1,131 @@
+"use client";
 
-'use client'
-
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { fetchViviendas } from '@/actions/vivienda'
-
-
-import { useState, useEffect } from "react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import viviendasData, { ViviendaType } from "@/testdata/dataViviendas";
+  createVivienda,
+  deleteVivienda,
+  fetchViviendas,
+} from "@/actions/vivienda";
+import { useState, useEffect, useCallback } from "react";
+import { ViviendaType } from "@/testdata/dataViviendas";
 import ViviendaCard from "./ViviendaCard";
-//import { fetchViviendas } from '@/actions/vivienda'
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"; // Importa el componente de alerta
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { FormularioModal } from "./FormularioModal";
 import { getInputData } from "@/lib/utils";
+import { Input } from "./ui/input";
+import { createRegistroResidencial } from "@/actions/registroresidencial";
+
 const ViviendaTab = () => {
-  const [viviendas, setViviendas] = useState<ViviendaType[]>([])
-  const [filtro, setFiltro] = useState<'todos' | 'vigentes' | 'no-vigentes'>('todos')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [error, setError] = useState<string | null>(null)
-
-
-  useEffect(() => {
-    switch (filtro) {
-      case "vigentes":
-        setViviendas(viviendasData.filter((v) => v.esVigente));
-        break;
-      case "no-vigentes":
-        setViviendas(viviendasData.filter((v) => !v.esVigente));
-        break;
-      default:
-        setViviendas(viviendasData);
-    }
-  }, [filtro]);
+  const [viviendas, setViviendas] = useState<ViviendaType[]>([]);
+  const [filteredViviendas, setFilteredViviendas] = useState<ViviendaType[]>(
+    []
+  );
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [nombreFilter, setNombreFilter] = useState("");
 
   useEffect(() => {
-    // Simulación de consulta a la API
-    // const loadData = async () => {
-    //     const { data, error } = await fetchViviendas(); // Llama a la función fetch
+    const loadData = async () => {
+      setLoading(true);
+      const { data, error } = await fetchViviendas();
 
-    //     if (error) {
-    //       setError(error); // Si hay un error, actualiza el estado de error
-    //     } else {
-    //       setError(null) // Restablecer el error si no hay error
-    //       setViviendas(data); // Si no hay error, actualiza el estado con los datos
-    //     }
-    //   };
+      if (error) {
+        setError(error);
+      } else {
+        setError(null);
+        setViviendas(data);
+        setFilteredViviendas(data);
+      }
+      setLoading(false);
+    };
 
-    // loadData()
-    setViviendas(viviendasData);
+    loadData();
   }, []);
+  const filters = () => {
+    if (!loading) {
+      const filtered = viviendas.filter((vivienda) =>
+        vivienda.direccion.toLowerCase().startsWith(nombreFilter.toLowerCase())
+      );
 
-  // Condición para mostrar alerta: Si hay error o no hay viviendas disponibles
+      if (filtered.length === 0 && nombreFilter !== "") {
+        setError(
+          "No se encontraron viviendas que coincidan con el filtro aplicado."
+        );
+      } else {
+        setError(null);
+      }
+
+      setFilteredViviendas(filtered);
+    }
+  };
+
+  useEffect(() => {
+    filters();
+  }, [nombreFilter, viviendas, loading]);
+
   const showErrorAlert = error || viviendas.length === 0;
-
-  // Determina el mensaje y el tipo de alerta dependiendo del error o la cantidad de viviendas
   const alertMessage = error
     ? "Hubo un problema al obtener los datos."
     : "No se encontraron viviendas con ese filtro.";
   const alertTitle = error ? "Error al cargar las viviendas" : "Sin resultados";
-  const alertVariant = error ? "destructive" : "default"; // Rojo para error, amarillo para sin resultados
+  const alertVariant = error ? "destructive" : "default";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function handleSubmit(data: Record<string, any>): void {
-    console.log(data);
+  async function handleSubmit(dataVivienda: any): Promise<void> {
+    const { direccion, tipoVivienda, idMunicipio, idPersona } = dataVivienda;
+    const viviendaData = {
+      direccion: direccion,
+      tipo: tipoVivienda,
+      idMunicipio: Number(idMunicipio),
+      idPersona: Number(idPersona),
+    };
+    const { error } = await createVivienda(viviendaData);
+    if (error) {
+      setError(error);
+    }
+  }
+
+  const updateViviendaInList = useCallback((updatedVivienda: ViviendaType) => {
+    setViviendas((prevViviendas) =>
+      prevViviendas.map((v) =>
+        v.id_vivienda === updatedVivienda.id_vivienda ? updatedVivienda : v
+      )
+    );
+    filters();
+  }, []);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function handleDelete(data: Record<string, any>): Promise<void> {
+    const {
+      idViviendaDelete,
+      idViviendaTransfer,
+      idCabezaFamilia,
+      fechaInicioOcupacion,
+      modalidadOcupacion,
+    } = data;
+    const viviendaData = {
+      idVivienda: Number(idViviendaDelete),
+      idViviendaTransfer: Number(idViviendaTransfer),
+      idCabezaFamilia: Number(idCabezaFamilia),
+      fechaInicio: fechaInicioOcupacion,
+      modalidadOcupacion: modalidadOcupacion,
+    };
+    const { error } = await deleteVivienda(viviendaData);
+    if (error) {
+      setError(error);
+    } else {
+      const { error } = await createRegistroResidencial(
+        Number(idCabezaFamilia),
+        Number(idViviendaTransfer),
+        modalidadOcupacion,
+        fechaInicioOcupacion,
+        ""
+      );
+      if (error) {
+        setError(error);
+      } else {
+        setError(null);
+      }
+    }
   }
 
   return (
@@ -86,20 +142,12 @@ const ViviendaTab = () => {
         </div>
 
         <section className="mt-5 flex flex-col md:flex-row items-start gap-2 w-full md:w-auto">
-          <Select
-            onValueChange={(value: "todos" | "vigentes" | "no-vigentes") =>
-              setFiltro(value)
-            }
-          >
-            <SelectTrigger className="w-full md:w-[180px] bg-gray-200">
-              <SelectValue placeholder="Filtrar por vigencia" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos</SelectItem>
-              <SelectItem value="vigentes">Vigentes</SelectItem>
-              <SelectItem value="no-vigentes">No vigentes</SelectItem>
-            </SelectContent>
-          </Select>
+          <Input
+            className="bg-gray-200"
+            placeholder="Buscar por nombre"
+            value={nombreFilter}
+            onChange={(e) => setNombreFilter(e.target.value)}
+          />
           <FormularioModal
             className="w-full md:w-[180px] bg-gray-200"
             title="Agregar Vivienda"
@@ -109,15 +157,14 @@ const ViviendaTab = () => {
           />
           <FormularioModal
             className="w-full md:w-[180px] bg-destructive border-none hover:bg-destructive/90 hover:text-white"
-            title="Eliminar Vivienda"
+            title="Para eliminar, reubica los habitantes a otra vivienda en caso de que esta tenga habitantes."
             name="Eliminar Vivienda"
             inputs={getInputData("delete")}
-            onSubmit={handleSubmit}
+            onSubmit={handleDelete}
           />
         </section>
       </div>
 
-      {/* Muestra la alerta si hay un error o si no hay viviendas disponibles */}
       {showErrorAlert && (
         <Alert variant={alertVariant ?? null}>
           <AlertTitle>{alertTitle}</AlertTitle>
@@ -126,8 +173,12 @@ const ViviendaTab = () => {
       )}
 
       <div className="flex flex-row flex-wrap gap-2">
-        {viviendas.map((vivienda) => (
-          <ViviendaCard key={vivienda.id_vivienda} vivienda={vivienda} />
+        {filteredViviendas.map((vivienda) => (
+          <ViviendaCard
+            key={vivienda.id_vivienda}
+            vivienda={vivienda}
+            onUpdate={updateViviendaInList}
+          />
         ))}
       </div>
     </div>

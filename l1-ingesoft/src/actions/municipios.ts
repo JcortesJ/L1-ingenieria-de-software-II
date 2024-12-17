@@ -5,29 +5,38 @@ export const fetchMunicipios = async () => {
       });
   
       if (!response.ok) {
-        throw new Error("Error al obtener los datos de municipios");
+        const message = response.statusText;
+        throw new Error(message);
       }
   
       const data = await response.json();
       return { data, error: null };
     } catch (err) {
       console.error("Error en la consulta API: ", err);
-      return { data: null, error: "No se pudo cargar los datos de municipios." };
+      return { data: null, error: (err as Error).message };
     }
   };
-
   export const cambiarAlcalde = async (municipioId: number, nuevoAlcaldeId: number): Promise<void> => {
-    const response = await fetch('/api/cambiar-alcalde', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ municipioId, nuevoAlcaldeId }),
-    })
+    try {
+      const response = await fetch('/api/municipios/update-gobernador', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idPersona: nuevoAlcaldeId, idMunicipio: municipioId }),
+      });
   
-    if (!response.ok) {
-      throw new Error('Failed to update alcalde')
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Ocurrió un error inesperado');
+      }
+    } catch (error) {
+      // Log adicional o transformación del error
+      console.error('Error en cambiarAlcalde:', error);
+      if (error instanceof Error) {
+        throw new Error(error.message || 'Error en cambiar alcalde');
+      } else {
+        throw new Error('Error en cambiar alcalde');
+      }
     }
-  }
-
+  };
+  
   

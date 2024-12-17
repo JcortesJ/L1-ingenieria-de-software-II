@@ -8,14 +8,14 @@ import { useToast } from '@/hooks/use-toast';
 import { ViviendaType } from '@/testdata/dataViviendas';
 import { updateDireccionVivienda } from '@/actions/vivienda';
 
-
 interface EditViviendaModalProps {
   isOpen: boolean;
   onClose: () => void;
   vivienda: ViviendaType;
+  onUpdate: (updatedVivienda: ViviendaType) => void;
 }
 
-export const EditViviendaModal = ({ isOpen, onClose, vivienda }: EditViviendaModalProps) => {
+export const EditViviendaModal = ({ isOpen, onClose, vivienda, onUpdate }: EditViviendaModalProps) => {
   const [direccion, setDireccion] = useState(vivienda.direccion);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -26,6 +26,7 @@ export const EditViviendaModal = ({ isOpen, onClose, vivienda }: EditViviendaMod
 
     try {
       await updateDireccionVivienda(vivienda.id_vivienda, { direccion });
+      onUpdate({...vivienda, direccion});
       toast({
         title: "Actualización exitosa",
         description: "Los datos de la vivienda han sido actualizados.",
@@ -48,16 +49,16 @@ export const EditViviendaModal = ({ isOpen, onClose, vivienda }: EditViviendaMod
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Editar Persona</DialogTitle>
+          <DialogTitle>Editar Vivienda</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="nombre" className="text-right">
-                Direccion
+              <Label htmlFor="direccion" className="text-right">
+                Dirección
               </Label>
               <Input
-                id="nombre"
+                id="direccion"
                 value={direccion}
                 onChange={(e) => setDireccion(e.target.value)}
                 className="col-span-3"

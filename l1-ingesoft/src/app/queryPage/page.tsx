@@ -1,6 +1,3 @@
-
-
-
 "use client";
 import DepartamentoTab from "@/components/DepartamentoTab";
 import MunicipioTab from "@/components/MunicipioTab";
@@ -9,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ViviendaTab from "@/components/ViviendaTab";
 import { useRouter } from "next/navigation";
- import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
+import RegistroRCTab from "@/components/RegistroRCTab";
 
 const queryPage = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -38,14 +36,17 @@ const queryPage = () => {
           >
             Personas
           </TabsTrigger>
-          <TabsTrigger className="flex-1" value="Viviendas">
+          <TabsTrigger className="flex-1 data-[state=active]:bg-[#C1C8C1]" value="Viviendas">
             Viviendas
           </TabsTrigger>
-          <TabsTrigger className="flex-1" value="Municipios">
+          <TabsTrigger className="flex-1 data-[state=active]:bg-[#C1C8C1]" value="Municipios">
             Municipios
           </TabsTrigger>
-          <TabsTrigger className="flex-1" value="Departamentos">
+          <TabsTrigger className="flex-1 data-[state=active]:bg-[#C1C8C1]" value="Departamentos">
             Departamentos
+          </TabsTrigger>
+          <TabsTrigger className="flex-1" value="Registro Residencial">
+            Registro Residencial
           </TabsTrigger>
         </TabsList>
         <TabsContent value="Personas">
@@ -60,11 +61,13 @@ const queryPage = () => {
         <TabsContent value="Departamentos">
           <DepartamentoTab />
         </TabsContent>
+        <TabsContent value="Registro Residencial">
+          <RegistroRCTab />
+        </TabsContent>
       </Tabs>
-       <Toaster />
+      <Toaster />
     </div>
   );
 };
-
 
 export default queryPage;
