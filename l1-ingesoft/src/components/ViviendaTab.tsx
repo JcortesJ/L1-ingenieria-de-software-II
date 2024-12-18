@@ -15,6 +15,8 @@ import { Input } from "./ui/input";
 import { createRegistroResidencial } from "@/actions/registroresidencial";
 import { Button } from "./ui/button";
 import { toast } from "@/hooks/use-toast";
+import { Skeleton } from "./ui/skeleton";
+import { AnimatedCard } from "./ui/AnimatedCard";
 
 const ViviendaTab = () => {
   const [viviendas, setViviendas] = useState<ViviendaType[]>([]);
@@ -96,7 +98,9 @@ const ViviendaTab = () => {
       idMunicipio: Number(idMunicipio),
       idPersona: Number(idPersona),
     };
-    const { error } = await createVivienda(viviendaData);
+    const { data, error } = await createVivienda(viviendaData);
+    console.log("data", data);
+    console.log("error", error);
     if (error) {
       toast({
         title: "Error al crear la vivienda",
@@ -143,7 +147,7 @@ const ViviendaTab = () => {
       fechaInicioOcupacion,
       ""
     );
-
+    console.log("error", error);
     if (error) {
       toast({
         title: "Error al crear el registro residencial",
@@ -152,6 +156,7 @@ const ViviendaTab = () => {
       });
     } else {
       const { error } = await deleteVivienda(viviendaData);
+      console.log("error", error);
       if (error) {
         toast({
           title: "Error al eliminar la vivienda",
@@ -226,14 +231,22 @@ const ViviendaTab = () => {
         </Alert>
       )}
 
-      <div className="flex flex-row flex-wrap gap-2">
-        {filteredViviendas.map((vivienda) => (
-          <ViviendaCard
-            key={vivienda.id_vivienda}
-            vivienda={vivienda}
-            onUpdate={updateViviendaInList}
-          />
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+        {loading
+          ? [...Array(3)].map((_, index) => (
+              <AnimatedCard key={index}>
+                <Skeleton className="h-10 w-100vw" />
+                <Skeleton className="h-10 w-100vw" />
+                <Skeleton className="h-10 w-100vw" />
+              </AnimatedCard>
+            ))
+          : filteredViviendas.map((vivienda) => (
+              <ViviendaCard
+                key={vivienda.id_vivienda}
+                vivienda={vivienda}
+                onUpdate={updateViviendaInList}
+              />
+            ))}
       </div>
     </div>
   );

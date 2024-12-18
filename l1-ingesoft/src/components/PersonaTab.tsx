@@ -188,6 +188,8 @@ const PersonaTab = () => {
 
     console.log(personaData);
     const { data, error } = await createPersona(personaData);
+    console.log("data", data);
+    console.log("error", error);
     if (error) {
       toast({
         title: "Error al crear la persona",
@@ -322,7 +324,7 @@ const PersonaTab = () => {
         </Alert>
       )}
 
-      <div className="flex flex-row flex-wrap gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
         {isLoading
           ? [...Array(3)].map((_, index) => (
               <AnimatedCard key={index}>

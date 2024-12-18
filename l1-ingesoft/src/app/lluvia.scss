@@ -1,0 +1,77 @@
+$total: 144;
+$time: 7;
+$height: 400;
+$percent: .69444%;
+$dotSize: .9;
+
+// Definición de la paleta de colores
+$color1: #c1c8c2;
+$color2: #3c4a3e;
+$color3: #92b398;
+$color4: #a8ccdd;
+$color5: #7395a6;
+
+.wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.c {
+  position: relative;
+  height: $height+px;
+  width: $percent;
+  margin-top: -$height+px;
+  animation: drop $time+s infinite ease-in;
+  &:after {
+    content: "";
+    position: absolute;
+    width: $dotSize+vw;
+    height: $dotSize+vw;
+    border-radius: 50%;
+    left: 50%;
+    bottom: -($dotSize/2)+vw;
+    margin-left: -($dotSize/2)+vw;
+  }
+}
+
+// Modificación del gradiente usando la paleta
+@for $i from 1 through $total {
+  $colorIndex: ($i % 5) + 1;
+  $currentColor: $color1;
+  
+  @if $colorIndex == 1 {
+    $currentColor: $color1;
+  } @else if $colorIndex == 2 {
+    $currentColor: $color3;
+  } @else if $colorIndex == 3 {
+    $currentColor: $color4;
+  } @else if $colorIndex == 4 {
+    $currentColor: $color5;
+  } @else {
+    $currentColor: $color2;
+  }
+  
+  .c:nth-child(#{$i}) {
+    left: ($i - 1) * $percent;
+    background-image: linear-gradient(to bottom, transparent, #{$currentColor});
+    animation-delay: random($total) * ($time/$total) * -1s;
+    &:after {
+      background: #{$currentColor};
+    }
+  }
+}
+
+@keyframes drop {
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 150vh, 0);
+    opacity: 0;
+  }
+}

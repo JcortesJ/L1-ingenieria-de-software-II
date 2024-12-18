@@ -14,8 +14,8 @@ const queryPage = () => {
   const router = useRouter();
   return (
     <div className="w-full h-full p-16">
-      <div className="w-full flex justify-between items-center">
-        <h1 className="text-3xl font-bold mb-4 ">
+      <div className="w-full flex flex-col md:flex-row justify-between items-center md:items-center gap-4 md:gap-0 mb-10">
+        <h1 className="text-3xl font-bold mb-4 text-center">
           Realice las consultas y observe su resultado
         </h1>
         <Button
@@ -36,13 +36,22 @@ const queryPage = () => {
           >
             Personas
           </TabsTrigger>
-          <TabsTrigger className="flex-1 data-[state=active]:bg-[#C1C8C1]" value="Viviendas">
+          <TabsTrigger
+            className="flex-1 data-[state=active]:bg-[#C1C8C1]"
+            value="Viviendas"
+          >
             Viviendas
           </TabsTrigger>
-          <TabsTrigger className="flex-1 data-[state=active]:bg-[#C1C8C1]" value="Municipios">
+          <TabsTrigger
+            className="flex-1 data-[state=active]:bg-[#C1C8C1]"
+            value="Municipios"
+          >
             Municipios
           </TabsTrigger>
-          <TabsTrigger className="flex-1 data-[state=active]:bg-[#C1C8C1]" value="Departamentos">
+          <TabsTrigger
+            className="flex-1 data-[state=active]:bg-[#C1C8C1]"
+            value="Departamentos"
+          >
             Departamentos
           </TabsTrigger>
           <TabsTrigger className="flex-1" value="Registro Residencial">
