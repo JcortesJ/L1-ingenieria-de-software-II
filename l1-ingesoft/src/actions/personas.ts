@@ -4,17 +4,13 @@ export const fetchPersonas = async () => {
     const response = await fetch("/api/persona", {
       method: "GET", // Aquí especificamos que es un GET
     });
-    console.log(response);
-    if (!response.ok) {
-      throw new Error("Error al obtener los datos de la API");
-    }
     const data = await response.json();
     return { data, error: null }; // Retorna los datos y un valor null para el error
   } catch (err) {
     console.error("Error en la consulta API: ", err);
     return {
       data: null,
-      error: "No se pudo cargar la información de las personas.",
+      error: "No se pudo cargar la información de las personas. error: " + err,
     }; // Retorna null para los datos y el error
   }
 };
@@ -30,7 +26,10 @@ export const createPersona = async (data: Record<string, any>) => {
     return { data: response, error: null };
   } catch (err) {
     console.error("Error al crear la persona: ", err);
-    return { data: null, error: "No se pudo crear la persona." };
+    return {
+      data: null,
+      error: "No se pudo crear la persona. error: " + err,
+    };
   }
 };
 
@@ -48,10 +47,6 @@ export const updatePersona = async (id: number, data: UpdatePersonaData) => {
     body: JSON.stringify(data),
   });
 
-  if (!response.ok) {
-    throw new Error("Failed to update persona");
-  }
-
   return response.json();
 };
 // actions/viviendas.ts
@@ -64,11 +59,6 @@ export async function getViviendasVacias() {
         "Content-Type": "application/json",
       },
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Error al obtener viviendas vacías");
-    }
 
     const data = await response.json();
     return { data, error: null };
@@ -84,21 +74,25 @@ export const fetchMiembrosFamilia = async (id: number) => {
       method: "GET",
     });
 
-    if (!response.ok) {
-      throw new Error("Error a los habitantes del hogar");
-    }
     const data = await response.json();
     return { data, error: null };
   } catch (err) {
     console.error("Error en la consulta API: ", err);
-    return { data: null, error: "No se pudo cargar los datos ." };
+    return {
+      data: null,
+      error: "No se pudo cargar los datos ." + err,
+    };
   }
 };
 
 export const getCdf = async (id: number) => {
-  const response = await fetch(`/api/cdf/${id}`, {
-    method: "GET",
-  });
-  const data = await response.json();
-  return { data, error: null };
+  try {
+    const response = await fetch(`/api/cdf/${id}`, {
+      method: "GET",
+    });
+    const data = await response.json();
+    return { data, error: null };
+  } catch (err) {
+    return { data: null, error: "No se pudo cargar los datos ." + err };
+  }
 };

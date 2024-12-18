@@ -62,6 +62,9 @@ export const deleteVivienda = async (data: Record<string, any>) => {
     return { data: response, error: null };
   } catch (err) {
     console.error("Error al eliminar la vivienda: ", err);
-    return { data: null, error: "No se pudo eliminar la vivienda." };
+    return {
+      data: null,
+      error: "No se pudo eliminar la vivienda. error: " + err,
+    };
   }
 };
