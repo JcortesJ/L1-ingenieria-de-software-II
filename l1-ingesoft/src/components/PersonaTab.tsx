@@ -324,7 +324,7 @@ const PersonaTab = () => {
         </Alert>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+      <div className="flex flex-row flex-wrap gap-4 justify-center">
         {isLoading
           ? [...Array(3)].map((_, index) => (
               <AnimatedCard key={index}>
